@@ -1,0 +1,30 @@
+flowchart TB
+ subgraph Acteurs[Acteurs]
+  direction TB
+  Ent[Entreprise et employés]
+  Cli[Client]
+  Adm[Administrateur plateforme]
+ end
+ subgraph SaaS[Plateforme BTP]
+  direction TB
+  Dev[Devis et catalogue - MVP]
+  Cha[Chantiers et avenants - E1]
+  Pla[Planning - E2]
+ end
+ subgraph Services[Services externes]
+  direction TB
+  IA[Fournisseur IA]
+  Mail[Service email]
+  Obj[Stockage privé]
+ end
+ Ent -->|Besoin, Excel, validation| Dev
+ Ent -->|Suivi et changements| Cha
+ Ent -->|Affectations| Pla
+ Cli -->|Décision et portail| Cha
+ Adm -->|Quotas et exploitation| Dev
+ Dev -->|Contexte minimisé| IA
+ IA -->|Proposition structurée| Dev
+ Dev -->|Envoi autorisé| Mail
+ Dev -->|Documents et PDF| Obj
+ Cha -->|Photos autorisées| Obj
+ Dev -->|Version acceptée| Cha
