@@ -1,0 +1,73 @@
+{
+  "runtime": "PGlite 0.3.14, PostgreSQL WASM, pas production",
+  "results": [
+    {
+      "name": "DDL PostgreSQL complet exécuté",
+      "status": "passed"
+    },
+    {
+      "name": "50 tables présentes",
+      "status": "passed"
+    },
+    {
+      "name": "FK composite refuse référence client entre tenants",
+      "status": "passed"
+    },
+    {
+      "name": "Devise autre que EUR refusée dans hypothèse MVP",
+      "status": "passed"
+    },
+    {
+      "name": "Budget supérieur plafond refusé",
+      "status": "passed"
+    },
+    {
+      "name": "RLS : sans contexte aucun client visible",
+      "status": "passed"
+    },
+    {
+      "name": "RLS : contexte A ne voit que A",
+      "status": "passed"
+    },
+    {
+      "name": "RLS : écriture B depuis contexte A refusée",
+      "status": "passed"
+    },
+    {
+      "name": "Contexte SET LOCAL ne survit pas à transaction",
+      "status": "passed"
+    },
+    {
+      "name": "Extension et contrainte planning exécutées",
+      "status": "passed"
+    },
+    {
+      "name": "Conflit planning inter-entreprises refusé",
+      "status": "passed"
+    },
+    {
+      "name": "Planning adjacent sans chevauchement accepté",
+      "status": "passed"
+    },
+    {
+      "name": "Intervalle fermé en fin refusé",
+      "status": "passed"
+    },
+    {
+      "name": "Index interdit deux versions acceptées d’un même devis",
+      "status": "passed"
+    },
+    {
+      "name": "TTC incohérent refusé",
+      "status": "passed"
+    },
+    {
+      "name": "Pointeur version accepté pour son agrégat",
+      "status": "passed"
+    },
+    {
+      "name": "Pointeur refusé vers version d’un autre devis du même tenant",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "diagrams": [
+    {
+      "diagram": "A-contexte",
+      "source_sha256": "c55112da4588077af3bd77b6ceb91f6bf32a6f9d96cbeaed0a40817722be5e89",
+      "svg_sha256": "710fffdae432ebb917bf14e6af9483b394329756f246b3a26e212d17896f4d9d",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "B-cas-utilisation",
+      "source_sha256": "2566b62fcce3c10cc5d285c3d2238bd2ca20d2a4d9c7a6897f60e310b7214e21",
+      "svg_sha256": "a9cd35031b8ca891984ca623f832dbfc6151800d78d643725b546e6decf4d24a",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "B-vue-simplifiee",
+      "source_sha256": "5fa4a3f375eb631f854dc267ded2d60dfe3562aa61aa29efb15b2f29eefef448",
+      "svg_sha256": "42620a4fc47aef3032803d7c31a2833f93914445d3afa26f82f2ea1346a48122",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "C-parcours-devis",
+      "source_sha256": "e7ecfb6b11a23a13ee90229f72697a52387cd98c9471f08b71fdcdc3e66378c8",
+      "svg_sha256": "cdbcb15f90c9a84fa592526e31c77a241560ee8519cba479c9def0155ae24219",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "D-chaine-ia",
+      "source_sha256": "57329751621ec2c32db8e7f205e483208e383de04f4617bee4cfb72c5cdcc42a",
+      "svg_sha256": "bb3e1bbdb616b763a384439a152ab67db480172925fe0c6180945b0ae412832a",
+      "max_nodes_same_y": 2
+    },
+    {
+      "diagram": "E-import-excel",
+      "source_sha256": "5752dbec46ff05111ea08f17581b0b400b5716d50e94c25d4d07c55497f34997",
+      "svg_sha256": "b193ef905a11333b60f1c07b93e0b03bb94eac8ec456cf98546b75530f24dae0",
+      "max_nodes_same_y": 2
+    },
+    {
+      "diagram": "F-classes-devis",
+      "source_sha256": "ad1dcc38d336c6bb898ea5bab67ae3944e105bcdee56e7d96a681e8e16face2d",
+      "svg_sha256": "9684ea2748ea62a1c6dd87c04585d25c42927b8b41c77ad4c73d6669e0e5db81",
+      "max_nodes_same_y": 2
+    },
+    {
+      "diagram": "F-classes-chantier",
+      "source_sha256": "cb58eb1bf07599a901145025b8a6847794c36da458efd5b86da05c5b4ed322f1",
+      "svg_sha256": "ab2d9146f73171c0c5ae6c3e2932b34e1cebf51970673b5e351318ad8d6a62c4",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "G-mcd-identites",
+      "source_sha256": "f15fa75c634f7611b038e808e95465635cfd4d19ecb3e4c53fe76b5f0b1d0c4b",
+      "svg_sha256": "74167cad5dc329cba4dc21d6fe46cbb246c0c285a9a8ee71334f2b766f89c899",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-mcd-chiffrage",
+      "source_sha256": "29d20bc61d14a6889ffdc21f3e92d4eef9bb663199de832ff8f87684ea4c0bef",
+      "svg_sha256": "13b02d074896f55e599e1cbc3b31cf76403f1cd239e8918087c220240286006d",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "G-mcd-chantier",
+      "source_sha256": "e57ba663db8461010b816e6acae441741d4f50e00564c4a94b19c7f750577749",
+      "svg_sha256": "391f5b0a9a1ac88b1444d801346785fa55ab26b63b7421d2baad4e59842cd13a",
+      "max_nodes_same_y": 5
+    },
+    {
+      "diagram": "H-etats-devis",
+      "source_sha256": "0929295b9a3cb44eea0250d4f697d5474a173858904733c0f3f6354fe590c643",
+      "svg_sha256": "456cb1ec8733a5c5c767c0e6fd58fe8d8da1ce513ef48dc7f9664e027323a0fd",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "H-etats-generation",
+      "source_sha256": "00f76e7d10cbf90198f22d38beacbd2bec0192d08947042a263013b1b1a4c8e3",
+      "svg_sha256": "dd29e5cf09c33cf199c9bc2b86b43b489e30bba90766639ab46efa981544261b",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "I-generation-api",
+      "source_sha256": "39878be90e614a3cbd39c202878f6177df76633a9e36be02dbfad3b340ea0d27",
+      "svg_sha256": "40ad226a573760dcf5247f24befad48ac63e3fdf894bd9cb8744a9faac03d7d1",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "I-generation-worker",
+      "source_sha256": "214b412bdceed1039bdd741366e6fd3b33c1ae3dc99d25f1fbf7f119e0de0386",
+      "svg_sha256": "71c1b314a62b656e3f78f902263754d9ad762fd7dafb712f462b56c52f8109f0",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "I-validation-envoi",
+      "source_sha256": "da916956669b403ca1444272f23514626503f7f8b229be0f591beae5e424337f",
+      "svg_sha256": "6d09221f5cb992427afbae25ca84947294a9fcd218e0b60a4ac925382c08a0b7",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "J-composants",
+      "source_sha256": "1170caf2a44c428835d9d838947de504b523071b98d25078a2eea5adddbe17af",
+      "svg_sha256": "a1cdadcf195cda15f6dbccfe207b6637de101029ba6aafc109c2b9172721e95c",
+      "max_nodes_same_y": 5
+    },
+    {
+      "diagram": "K-frontieres",
+      "source_sha256": "9dd9b398dad65b8284040d2797dc6803994d92d4ca79ed964c518507d30f3ad3",
+      "svg_sha256": "4e0503966f190409a4b52f0341b1b98b1cfde6710b181f2c07b5b065623d49d8",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "L-deploiement-uml",
+      "source_sha256": "c77caf4748e35a757374828490804744f528f70beebbe8937f84dd8ef9cbb885",
+      "svg_sha256": "eb427bbe644ed1e5c3c3ae2bb0bf614689c417a164786bef710171a43305d914",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "L-dev",
+      "source_sha256": "10a06674cfaff6f40c0a53defd971b44050ef393204797dedbf65a6796211351",
+      "svg_sha256": "1618a702a9797ae91548e201bf7ed12f4ef6bc43e8ccd6a1d91647dc2e74bfde",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "L-preprod",
+      "source_sha256": "f4be3f8b7adf173eeaff42186af0c2dc15830a5ac1812fbdad05da714b6e8c05",
+      "svg_sha256": "124bd979a8809cef0390999943583f4bdd605dc1d3297507c9db23abee2a3683",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "L-prod",
+      "source_sha256": "93d579a4c3f331e0d5cb2ca11cbf6dc3079d1602fdf69f144f8f63af1bdf082e",
+      "svg_sha256": "5eb700aed2385ecaeefb9e0eabbf896d71bccd64e54b5651675f714675431ef0",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "M-parcours-chantier",
+      "source_sha256": "384d179f0784c97c41acf6e77e7c6b6a19f2bcf75342397dd3a9bee3615767a8",
+      "svg_sha256": "d816c50099bda9bcaa2f7c129524ab93bde945b6bdc178662c16d0a997e7e3ef",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "N-activite-avenant",
+      "source_sha256": "3831d07d04b3cb854de159815bc03aa4b5e38ae67c15c10205dbd283b47b2758",
+      "svg_sha256": "f56b0c092444c27f3836342ccd366469f9c5e1ad65fee61a2c3c7f69905eced2",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "N-sequence-avenant",
+      "source_sha256": "29f5ea2cf56eb3121ec196a4f46660b418d9bdc4eea2c3f82e38d3342514f993",
+      "svg_sha256": "950f89e4c235f58ff1bfe1438f74f3b4279381e731152d5f10b51a2b6918769c",
+      "max_nodes_same_y": null
+    },
+    {
+      "diagram": "O-etats-chantier",
+      "source_sha256": "4cc421bd43939a8ff3619db8baec4d184b59f77d1a5d3f4805b109f665088a17",
+      "svg_sha256": "93c607b84a4cbfbb9519e4c06971578f59f9b9c01bccadbd64a31af17e9ebd46",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "O-etats-avenant",
+      "source_sha256": "e974114e61abbbc21e5f026f358d3f01c401d0bd2198ddb0d127e430ff921984",
+      "svg_sha256": "7b05f557557b0261843c77f96e204b3fac75abdea2b07eca70c8ec4d78c5e1c5",
+      "max_nodes_same_y": 5
+    },
+    {
+      "diagram": "P-planning",
+      "source_sha256": "9b66a7e0392ba73aec8e30b6e01785f11a87be12ad4c5390e60d446cffa2604e",
+      "svg_sha256": "62d58b8c5bb410d43ff97e12e000bed2d9897faddf394e29b80594a82e4d62e3",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "Q-amelioration",
+      "source_sha256": "7048ee27ee6befa1d2ded1b7b8f385ce71dbaf11eea7d2c37c117714ff0594d4",
+      "svg_sha256": "869e90a77fb1adf71faa37b2ece4aa2a81e786a370ba587edce609d1ad6d6c7e",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-erd-identites",
+      "source_sha256": "9f8380fd898ca3827bece1b080b9a2fe6a816d9cbf74dc44c1f97d94e0dec404",
+      "svg_sha256": "834a11b4e8ce9588d92c891aba3c8d7dd7ac255bfb4ec0e9887e3a35f456d58c",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "G-erd-catalogue",
+      "source_sha256": "e37d67bc36ae7b9b8487b051ad1e4e4bde6811364310f46c663cff9fd9acde56",
+      "svg_sha256": "ca08623eabc98e30f11b462430ace65fdaa4aca5afa31ce309f3d68247bc414b",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-erd-devis",
+      "source_sha256": "8796c487c4edd21a99e25284a9479b8d8d3b25afeb9ccb7ede9f58df8570b774",
+      "svg_sha256": "e56cf3fea11688c2c03a85b8bb2870ad983dd3d00f3f2fee199044d058cd7432",
+      "max_nodes_same_y": 5
+    },
+    {
+      "diagram": "G-erd-generation",
+      "source_sha256": "63c9d305a02a7f64a80aee214988fa9001f1f44fe78689eaa32b5d6e242cd6fc",
+      "svg_sha256": "a2bea0685b4733ebf691f051cd115791eef93a38bfe7a915b1f52ed63a673975",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "G-erd-traitements",
+      "source_sha256": "bf2c1713baf93ecf6599b1cb44e3961cc9f02a40b07a4305f32b07f8b78182f7",
+      "svg_sha256": "2103a46ae0468fedcafd7cd0f88bc76852c81584ecc45bcb442fa7867aa44485",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-erd-connaissances",
+      "source_sha256": "80565bd450eb6abf14134b642d6b1bb16ac7e1b4d8c369fe553c5c624bef572e",
+      "svg_sha256": "d17d67e9ccdabfa68231776c9611e4f5f2f6dcbb61b1561fa966ae207312518b",
+      "max_nodes_same_y": 2
+    },
+    {
+      "diagram": "G-erd-chantier",
+      "source_sha256": "11e15d51ada0294c1c18bb032a94cb4e277b20f9b36432c71cd1f91e66e3503a",
+      "svg_sha256": "dbdccf03c8e74798e0655ecbee95356e609010965871764de1fd20a6900ea37e",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-erd-suivi",
+      "source_sha256": "e41fb2541dd42c3bce7612b440d558d79234f7f75ed1becfb0d002c9f0d4d115",
+      "svg_sha256": "a363ecf792d395cf2e2a4433ed15aeef99e3fd3cf7690c6c2a98bb53fe8a7e47",
+      "max_nodes_same_y": 4
+    },
+    {
+      "diagram": "G-erd-avenants",
+      "source_sha256": "29bf907a0979c09038c5569fe6855a0e42e1861b4fa63bdd3473c1a713837ca9",
+      "svg_sha256": "1ba7a2b5b77c281e355d0a54f2689295411594f70b648adeae32751bcb50f4e2",
+      "max_nodes_same_y": 3
+    },
+    {
+      "diagram": "G-erd-planning",
+      "source_sha256": "1bb216e80c9ba62360f3f77e61a62273ebbfb1ff0adc3769d2b49230a1576c56",
+      "svg_sha256": "ef993dd1b05e0522c1036d13ed6fc2779b0d143565e9a58081eaebc18c336a6c",
+      "max_nodes_same_y": 3
+    }
+  ],
+  "tables": 50,
+  "rules": 26,
+  "acceptance_criteria": 40
+}
