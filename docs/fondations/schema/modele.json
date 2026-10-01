@@ -1,0 +1,3134 @@
+{
+  "accounts": {
+    "scope": "global",
+    "meaning": "Compte authentifié indépendant des entreprises",
+    "columns": [
+      {
+        "name": "email",
+        "type": "text",
+        "meaning": "Email normalisé unique",
+        "example": "pilote@example.test",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "password_hash",
+        "type": "text",
+        "meaning": "Hash robuste ; jamais retourné",
+        "example": "hash Argon2id",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACTIF, DESACTIVE",
+        "example": "ACTIF",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('ACTIF','DESACTIVE')"
+      },
+      {
+        "name": "auth_epoch",
+        "type": "integer",
+        "meaning": "Révocation globale des sessions",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "email"
+      ]
+    ],
+    "checks": []
+  },
+  "sessions": {
+    "scope": "global",
+    "meaning": "Session authentifiée ; sélection tenant recontrôlée à chaque requête",
+    "columns": [
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "meaning": "Compte connecté",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "meaning": "Empreinte jeton opaque ; secret uniquement en cookie",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "account_auth_epoch",
+        "type": "integer",
+        "meaning": "Epoch compte lors de création",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamptz",
+        "meaning": "Expiration absolue",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "revoked_at",
+        "type": "timestamptz",
+        "meaning": "Révocation",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "token_hash"
+      ]
+    ],
+    "checks": []
+  },
+  "tenants": {
+    "scope": "global",
+    "meaning": "Entreprise SaaS",
+    "columns": [
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Nom entreprise",
+        "example": "Peinture Exemple",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "currency",
+        "type": "text",
+        "meaning": "Devise MVP unique",
+        "example": "EUR",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "pricing_policy",
+        "type": "jsonb",
+        "meaning": "Politique de prix versionnée à copier dans les devis",
+        "example": "{\"schema_version\":1,\"mode\":\"MAJORATION\",\"rate\":\"0.25\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "ai_monthly_budget",
+        "type": "numeric(18,2)",
+        "meaning": "Plafond dépenses IA en EUR",
+        "example": "20.00",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACTIF, SUSPENDU, ARCHIVE",
+        "example": "ACTIF",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('ACTIF','SUSPENDU','ARCHIVE')"
+      }
+    ],
+    "unique": [],
+    "checks": [
+      "currency = 'EUR'",
+      "ai_monthly_budget >= 0"
+    ]
+  },
+  "units": {
+    "scope": "global",
+    "meaning": "Unités autorisées et dimensions",
+    "columns": [
+      {
+        "name": "code",
+        "type": "text",
+        "meaning": "Code normalisé",
+        "example": "m2",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "dimension",
+        "type": "text",
+        "meaning": "Dimension physique",
+        "example": "SURFACE",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "factor_to_base",
+        "type": "numeric(18,6)",
+        "meaning": "Facteur pour même dimension",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "factor_to_base > 0"
+      }
+    ],
+    "unique": [
+      [
+        "code"
+      ]
+    ],
+    "checks": []
+  },
+  "knowledge_releases": {
+    "scope": "global",
+    "meaning": "Corpus/règles communes autorisés ; aucun tarif privé",
+    "columns": [
+      {
+        "name": "version",
+        "type": "text",
+        "meaning": "Identifiant publication",
+        "example": "peinture-1.0",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : CANDIDATE, APPROUVEE, PUBLIEE, RETIREE",
+        "example": "CANDIDATE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('CANDIDATE','APPROUVEE','PUBLIEE','RETIREE')"
+      },
+      {
+        "name": "manifest",
+        "type": "jsonb",
+        "meaning": "Sources/licences/hashes/approbateurs et critères",
+        "example": "{\"schema_version\":1,\"sources\":[]}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "hash",
+        "type": "text",
+        "meaning": "SHA256 du contenu",
+        "example": "64 caractères hex",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "version"
+      ]
+    ],
+    "checks": []
+  },
+  "memberships": {
+    "scope": "M",
+    "meaning": "Lien compte entreprise",
+    "columns": [
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "meaning": "Compte membre",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACTIF, REVOQUE",
+        "example": "ACTIF",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('ACTIF','REVOQUE')"
+      },
+      {
+        "name": "auth_epoch",
+        "type": "integer",
+        "meaning": "Révocation dans tenant",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "account_id"
+      ]
+    ],
+    "checks": []
+  },
+  "membership_roles": {
+    "scope": "M",
+    "meaning": "Attribution de rôle par appartenance",
+    "columns": [
+      {
+        "name": "membership_id",
+        "type": "uuid",
+        "meaning": "Appartenance",
+        "example": "UUID de memberships",
+        "nullable": false,
+        "ref": "memberships",
+        "check": null
+      },
+      {
+        "name": "role",
+        "type": "text",
+        "meaning": "Valeur contrôlée : AE, DV, CH, EM",
+        "example": "AE",
+        "nullable": false,
+        "ref": null,
+        "check": "role IN ('AE','DV','CH','EM')"
+      },
+      {
+        "name": "permissions",
+        "type": "jsonb",
+        "meaning": "Permissions déléguées explicites",
+        "example": "[\"quote.validate\"]",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "membership_id",
+        "role"
+      ]
+    ],
+    "checks": []
+  },
+  "invitations": {
+    "scope": "M",
+    "meaning": "Invitation employé à durée limitée",
+    "columns": [
+      {
+        "name": "email",
+        "type": "text",
+        "meaning": "Destinataire vérifié",
+        "example": "employe@example.test",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "token_hash",
+        "type": "text",
+        "meaning": "SHA256 jeton, pas le secret",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamptz",
+        "meaning": "Expiration",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "used_at",
+        "type": "timestamptz",
+        "meaning": "Consommation unique",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "roles",
+        "type": "jsonb",
+        "meaning": "Rôles approuvés par AE",
+        "example": "[\"DV\"]",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "token_hash"
+      ]
+    ],
+    "checks": []
+  },
+  "clients": {
+    "scope": "M",
+    "meaning": "Bénéficiaire du devis ou chantier",
+    "columns": [
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Nom bénéficiaire",
+        "example": "Client Exemple",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "details",
+        "type": "jsonb",
+        "meaning": "Coordonnées minimisées",
+        "example": "{\"schema_version\":1,\"address\":\"adresse fictive\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "archived_at",
+        "type": "timestamptz",
+        "meaning": "Archivage",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "client_contacts": {
+    "scope": "M",
+    "meaning": "Contact destinataire et futur accès portail",
+    "columns": [
+      {
+        "name": "client_id",
+        "type": "uuid",
+        "meaning": "Client lié",
+        "example": "UUID de clients",
+        "nullable": false,
+        "ref": "clients",
+        "check": null
+      },
+      {
+        "name": "email",
+        "type": "text",
+        "meaning": "Email vérifié pour envoi",
+        "example": "client@example.test",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Nom affiché",
+        "example": "Contact Exemple",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "files": {
+    "scope": "M",
+    "meaning": "Fichier privé scanné ; son chemin seul ne donne aucun droit",
+    "columns": [
+      {
+        "name": "object_key",
+        "type": "text",
+        "meaning": "Clé objet inclut tenant",
+        "example": "tenant-uuid/files/random",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "mime_type",
+        "type": "text",
+        "meaning": "Type réel validé",
+        "example": "application/pdf",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "bytes",
+        "type": "bigint",
+        "meaning": "Taille en octets",
+        "example": "1024",
+        "nullable": false,
+        "ref": null,
+        "check": "bytes >= 0"
+      },
+      {
+        "name": "sha256",
+        "type": "text",
+        "meaning": "Hash fichier",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : QUARANTAINE, DISPONIBLE, REJETE, PURGE",
+        "example": "QUARANTAINE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('QUARANTAINE','DISPONIBLE','REJETE','PURGE')"
+      },
+      {
+        "name": "uploaded_by",
+        "type": "uuid",
+        "meaning": "Auteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "purge_after",
+        "type": "timestamptz",
+        "meaning": "Date purge définie par politique",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "object_key"
+      ]
+    ],
+    "checks": []
+  },
+  "catalog_imports": {
+    "scope": "M",
+    "meaning": "Staging et confirmation de catalogue",
+    "columns": [
+      {
+        "name": "file_id",
+        "type": "uuid",
+        "meaning": "XLSX source",
+        "example": "UUID de files",
+        "nullable": false,
+        "ref": "files",
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : EN_ATTENTE, A_CORRIGER, PRET, CONFIRME, ECHEC",
+        "example": "EN_ATTENTE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('EN_ATTENTE','A_CORRIGER','PRET','CONFIRME','ECHEC')"
+      },
+      {
+        "name": "mapping",
+        "type": "jsonb",
+        "meaning": "Colonnes, formats et unités",
+        "example": "{\"reference\":\"A\",\"price\":\"C\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "report",
+        "type": "jsonb",
+        "meaning": "Erreurs et exclusions explicites",
+        "example": "{\"rows_valid\":98,\"rows_excluded\":2}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "preview_hash",
+        "type": "text",
+        "meaning": "Empreinte preview et mapping",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "base_revision",
+        "type": "integer",
+        "meaning": "Révision catalogue avant import",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "catalog_revisions": {
+    "scope": "M",
+    "meaning": "Publication atomique catalogue",
+    "columns": [
+      {
+        "name": "number",
+        "type": "integer",
+        "meaning": "Numéro monotone par tenant",
+        "example": "2",
+        "nullable": false,
+        "ref": null,
+        "check": "number > 0"
+      },
+      {
+        "name": "import_id",
+        "type": "uuid",
+        "meaning": "Source import ou manuel",
+        "example": "UUID de catalog_imports",
+        "nullable": true,
+        "ref": "catalog_imports",
+        "check": null
+      },
+      {
+        "name": "hash",
+        "type": "text",
+        "meaning": "Hash manifeste catalogue",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "number"
+      ]
+    ],
+    "checks": []
+  },
+  "resources": {
+    "scope": "M",
+    "meaning": "Matériau, main-d’œuvre, équipement ou frais",
+    "columns": [
+      {
+        "name": "reference",
+        "type": "text",
+        "meaning": "Référence entreprise stable",
+        "example": "MAT-PEINT-01",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Libellé",
+        "example": "Peinture blanche",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "kind",
+        "type": "text",
+        "meaning": "Valeur contrôlée : MATERIAU, MAIN_OEUVRE, EQUIPEMENT, FRAIS",
+        "example": "MATERIAU",
+        "nullable": false,
+        "ref": null,
+        "check": "kind IN ('MATERIAU','MAIN_OEUVRE','EQUIPEMENT','FRAIS')"
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité de coût/consommation",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "pack_size",
+        "type": "numeric(18,6)",
+        "meaning": "Quantité par emballage dans unité de ressource",
+        "example": "5",
+        "nullable": true,
+        "ref": null,
+        "check": "pack_size > 0"
+      },
+      {
+        "name": "archived_at",
+        "type": "timestamptz",
+        "meaning": "Archivage",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "reference"
+      ]
+    ],
+    "checks": []
+  },
+  "resource_prices": {
+    "scope": "M",
+    "meaning": "Historique des prix par publication",
+    "columns": [
+      {
+        "name": "resource_id",
+        "type": "uuid",
+        "meaning": "Ressource",
+        "example": "UUID de resources",
+        "nullable": false,
+        "ref": "resources",
+        "check": null
+      },
+      {
+        "name": "catalog_revision_id",
+        "type": "uuid",
+        "meaning": "Publication",
+        "example": "UUID de catalog_revisions",
+        "nullable": false,
+        "ref": "catalog_revisions",
+        "check": null
+      },
+      {
+        "name": "purchase_unit_price",
+        "type": "numeric(18,6)",
+        "meaning": "Prix HT EUR par unité de coût",
+        "example": "6",
+        "nullable": false,
+        "ref": null,
+        "check": "purchase_unit_price >= 0"
+      },
+      {
+        "name": "currency",
+        "type": "text",
+        "meaning": "Devise prix",
+        "example": "EUR",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "source",
+        "type": "jsonb",
+        "meaning": "Cellule Excel ou saisie sourcée",
+        "example": "{\"sheet\":\"Matériaux\",\"cell\":\"C2\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "resource_id",
+        "catalog_revision_id"
+      ]
+    ],
+    "checks": [
+      "currency = 'EUR'"
+    ]
+  },
+  "works": {
+    "scope": "M",
+    "meaning": "Ouvrage stable, par métier",
+    "columns": [
+      {
+        "name": "reference",
+        "type": "text",
+        "meaning": "Référence ouvrage",
+        "example": "PEINT-2C",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "trade",
+        "type": "text",
+        "meaning": "Corps de métier",
+        "example": "PEINTURE",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Nom ouvrage",
+        "example": "Peinture intérieure deux couches",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "reference"
+      ]
+    ],
+    "checks": []
+  },
+  "work_revisions": {
+    "scope": "M",
+    "meaning": "Recette immuable publiée",
+    "columns": [
+      {
+        "name": "work_id",
+        "type": "uuid",
+        "meaning": "Ouvrage",
+        "example": "UUID de works",
+        "nullable": false,
+        "ref": "works",
+        "check": null
+      },
+      {
+        "name": "number",
+        "type": "integer",
+        "meaning": "Révision recette",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "number > 0"
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité de travail",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "conditions",
+        "type": "jsonb",
+        "meaning": "Conditions/rendements applicables",
+        "example": "{\"schema_version\":1,\"coats\":2}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "hash",
+        "type": "text",
+        "meaning": "Hash recette",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "work_id",
+        "number"
+      ]
+    ],
+    "checks": []
+  },
+  "work_components": {
+    "scope": "M",
+    "meaning": "Ressource composant un ouvrage, un niveau au MVP",
+    "columns": [
+      {
+        "name": "work_revision_id",
+        "type": "uuid",
+        "meaning": "Recette",
+        "example": "UUID de work_revisions",
+        "nullable": false,
+        "ref": "work_revisions",
+        "check": null
+      },
+      {
+        "name": "resource_id",
+        "type": "uuid",
+        "meaning": "Ressource",
+        "example": "UUID de resources",
+        "nullable": false,
+        "ref": "resources",
+        "check": null
+      },
+      {
+        "name": "quantity_per_unit",
+        "type": "numeric(18,6)",
+        "meaning": "Unité ressource par unité ouvrage",
+        "example": "0.2",
+        "nullable": false,
+        "ref": null,
+        "check": "quantity_per_unit > 0"
+      },
+      {
+        "name": "loss_rate",
+        "type": "numeric(9,6)",
+        "meaning": "Perte appliquée au consommable ; fraction, pas pourcentage entier",
+        "example": "0.1",
+        "nullable": false,
+        "ref": null,
+        "check": "loss_rate >= 0 AND loss_rate < 1"
+      },
+      {
+        "name": "basis",
+        "type": "jsonb",
+        "meaning": "Portée couche/rendement et conditionnement",
+        "example": "{\"covers_all_coats\":true}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "requirements": {
+    "scope": "M",
+    "meaning": "Besoin agrégé pour un client",
+    "columns": [
+      {
+        "name": "client_id",
+        "type": "uuid",
+        "meaning": "Bénéficiaire",
+        "example": "UUID de clients",
+        "nullable": false,
+        "ref": "clients",
+        "check": null
+      },
+      {
+        "name": "title",
+        "type": "text",
+        "meaning": "Nom projet",
+        "example": "Peinture salon",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "current_revision",
+        "type": "integer",
+        "meaning": "Révision courante",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "requirement_revisions": {
+    "scope": "M",
+    "meaning": "Snapshot immuable du besoin et des réponses",
+    "columns": [
+      {
+        "name": "requirement_id",
+        "type": "uuid",
+        "meaning": "Besoin",
+        "example": "UUID de requirements",
+        "nullable": false,
+        "ref": "requirements",
+        "check": null
+      },
+      {
+        "name": "number",
+        "type": "integer",
+        "meaning": "Numéro révision",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "number > 0"
+      },
+      {
+        "name": "payload",
+        "type": "jsonb",
+        "meaning": "Faits, contraintes, réponses sourcées",
+        "example": "{\"schema_version\":1,\"surface_m2\":\"40\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "hash",
+        "type": "text",
+        "meaning": "Hash entrée",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "meaning": "Auteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "requirement_id",
+        "number"
+      ]
+    ],
+    "checks": []
+  },
+  "requirement_files": {
+    "scope": "M",
+    "meaning": "Pièces d’une révision de besoin",
+    "columns": [
+      {
+        "name": "requirement_revision_id",
+        "type": "uuid",
+        "meaning": "Révision",
+        "example": "UUID de requirement_revisions",
+        "nullable": false,
+        "ref": "requirement_revisions",
+        "check": null
+      },
+      {
+        "name": "file_id",
+        "type": "uuid",
+        "meaning": "Pièce autorisée",
+        "example": "UUID de files",
+        "nullable": false,
+        "ref": "files",
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "requirement_revision_id",
+        "file_id"
+      ]
+    ],
+    "checks": []
+  },
+  "quotes": {
+    "scope": "M",
+    "meaning": "Agrégat devis et pointeurs métier",
+    "columns": [
+      {
+        "name": "requirement_id",
+        "type": "uuid",
+        "meaning": "Besoin associé",
+        "example": "UUID de requirements",
+        "nullable": false,
+        "ref": "requirements",
+        "check": null
+      },
+      {
+        "name": "reference",
+        "type": "text",
+        "meaning": "Référence commerciale unique dans tenant",
+        "example": "DEV-2026-001",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "draft_version_id",
+        "type": "uuid",
+        "meaning": "Brouillon courant",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "active_offer_version_id",
+        "type": "uuid",
+        "meaning": "Offre envoyée encore active",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "accepted_version_id",
+        "type": "uuid",
+        "meaning": "Version acceptée une seule fois",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "archived_at",
+        "type": "timestamptz",
+        "meaning": "Archivage",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "reference"
+      ]
+    ],
+    "checks": []
+  },
+  "quote_versions": {
+    "scope": "M",
+    "meaning": "Version commerciale ; contenu figé dès VALIDE",
+    "columns": [
+      {
+        "name": "quote_id",
+        "type": "uuid",
+        "meaning": "Devis parent",
+        "example": "UUID de quotes",
+        "nullable": false,
+        "ref": "quotes",
+        "check": null
+      },
+      {
+        "name": "requirement_revision_id",
+        "type": "uuid",
+        "meaning": "Besoin source",
+        "example": "UUID de requirement_revisions",
+        "nullable": false,
+        "ref": "requirement_revisions",
+        "check": null
+      },
+      {
+        "name": "number",
+        "type": "integer",
+        "meaning": "Numéro commercial",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "number > 0"
+      },
+      {
+        "name": "edit_revision",
+        "type": "integer",
+        "meaning": "Révision optimiste du brouillon",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "edit_revision > 0"
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : BROUILLON, EN_REVUE, VALIDE, ENVOYE, ACCEPTE, REFUSE, EXPIRE, REMPLACE, ABANDONNE",
+        "example": "BROUILLON",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('BROUILLON','EN_REVUE','VALIDE','ENVOYE','ACCEPTE','REFUSE','EXPIRE','REMPLACE','ABANDONNE')"
+      },
+      {
+        "name": "currency",
+        "type": "text",
+        "meaning": "Devise",
+        "example": "EUR",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "pricing_snapshot",
+        "type": "jsonb",
+        "meaning": "Paramètres/recettes/taxes/sources versionnés",
+        "example": "{\"schema_version\":1,\"mode\":\"MAJORATION\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "total_ht",
+        "type": "numeric(18,2)",
+        "meaning": "Vente hors taxes EUR",
+        "example": "302.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "total_tax",
+        "type": "numeric(18,2)",
+        "meaning": "Taxe par groupe EUR",
+        "example": "60.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "total_ttc",
+        "type": "numeric(18,2)",
+        "meaning": "TTC EUR",
+        "example": "363.00",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "content_hash",
+        "type": "text",
+        "meaning": "Hash contenu figé ou brouillon",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "valid_until",
+        "type": "timestamptz",
+        "meaning": "Échéance offre",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "frozen_at",
+        "type": "timestamptz",
+        "meaning": "Gel après validation",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "validated_by",
+        "type": "uuid",
+        "meaning": "Validateur",
+        "example": "UUID de accounts",
+        "nullable": true,
+        "ref": "accounts",
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "quote_id",
+        "number"
+      ],
+      [
+        "quote_id",
+        "id"
+      ]
+    ],
+    "checks": [
+      "currency = 'EUR'",
+      "total_ttc = total_ht + total_tax"
+    ]
+  },
+  "quote_lines": {
+    "scope": "M",
+    "meaning": "Poste de vente avec snapshots et provenance",
+    "columns": [
+      {
+        "name": "quote_version_id",
+        "type": "uuid",
+        "meaning": "Version",
+        "example": "UUID de quote_versions",
+        "nullable": false,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "position",
+        "type": "integer",
+        "meaning": "Ordre dans document",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "position > 0"
+      },
+      {
+        "name": "work_revision_id",
+        "type": "uuid",
+        "meaning": "Ouvrage origine",
+        "example": "UUID de work_revisions",
+        "nullable": true,
+        "ref": "work_revisions",
+        "check": null
+      },
+      {
+        "name": "label",
+        "type": "text",
+        "meaning": "Libellé figé",
+        "example": "Peinture deux couches",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité vendue",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "quantity",
+        "type": "numeric(18,6)",
+        "meaning": "Quantité vendue",
+        "example": "40",
+        "nullable": false,
+        "ref": null,
+        "check": "quantity > 0"
+      },
+      {
+        "name": "sale_unit_price",
+        "type": "numeric(18,6)",
+        "meaning": "Prix unitaire vente HT EUR",
+        "example": "7.5625",
+        "nullable": false,
+        "ref": null,
+        "check": "sale_unit_price >= 0"
+      },
+      {
+        "name": "cost_unit",
+        "type": "numeric(18,6)",
+        "meaning": "Coût de revient unitaire EUR",
+        "example": "6.05",
+        "nullable": false,
+        "ref": null,
+        "check": "cost_unit >= 0"
+      },
+      {
+        "name": "tax_rate",
+        "type": "numeric(9,6)",
+        "meaning": "Taux taxe configuré ; fraction, pas pourcentage entier",
+        "example": "0.2",
+        "nullable": false,
+        "ref": null,
+        "check": "tax_rate >= 0 AND tax_rate < 1"
+      },
+      {
+        "name": "amount_ht",
+        "type": "numeric(18,2)",
+        "meaning": "Montant arrondi ligne EUR",
+        "example": "302.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "origin",
+        "type": "text",
+        "meaning": "Valeur contrôlée : EXPLICITE, ESTIMEE, MANUELLE",
+        "example": "EXPLICITE",
+        "nullable": false,
+        "ref": null,
+        "check": "origin IN ('EXPLICITE','ESTIMEE','MANUELLE')"
+      },
+      {
+        "name": "confirmed",
+        "type": "boolean",
+        "meaning": "Confirmation estimation critique",
+        "example": "true",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "provenance",
+        "type": "jsonb",
+        "meaning": "Sources, hypothèses, confirmations et règle calcul",
+        "example": "{\"schema_version\":1,\"page\":2,\"field\":\"surface\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "quote_version_id",
+        "position"
+      ]
+    ],
+    "checks": []
+  },
+  "line_components": {
+    "scope": "M",
+    "meaning": "Détail analytique non vendu en plus de la ligne",
+    "columns": [
+      {
+        "name": "quote_line_id",
+        "type": "uuid",
+        "meaning": "Ligne vendue",
+        "example": "UUID de quote_lines",
+        "nullable": false,
+        "ref": "quote_lines",
+        "check": null
+      },
+      {
+        "name": "resource_price_id",
+        "type": "uuid",
+        "meaning": "Prix origine",
+        "example": "UUID de resource_prices",
+        "nullable": true,
+        "ref": "resource_prices",
+        "check": null
+      },
+      {
+        "name": "label",
+        "type": "text",
+        "meaning": "Libellé snapshot",
+        "example": "Peinture blanche",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "quantity",
+        "type": "numeric(18,6)",
+        "meaning": "Consommation/achat alloué",
+        "example": "10",
+        "nullable": false,
+        "ref": null,
+        "check": "quantity >= 0"
+      },
+      {
+        "name": "purchase_unit_snapshot",
+        "type": "numeric(18,6)",
+        "meaning": "Prix achat HT EUR",
+        "example": "6",
+        "nullable": false,
+        "ref": null,
+        "check": "purchase_unit_snapshot >= 0"
+      },
+      {
+        "name": "facturable",
+        "type": "boolean",
+        "meaning": "Doit rester false en mode ouvrage agrégé",
+        "example": "false",
+        "nullable": false,
+        "ref": null,
+        "check": "facturable = false"
+      },
+      {
+        "name": "allocation",
+        "type": "jsonb",
+        "meaning": "Pertes, emballage et portée",
+        "example": "{\"scope\":\"site\",\"packs\":2}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "quote_decisions": {
+    "scope": "M",
+    "meaning": "Preuve de décision sur une version envoyée",
+    "columns": [
+      {
+        "name": "quote_version_id",
+        "type": "uuid",
+        "meaning": "Version précise",
+        "example": "UUID de quote_versions",
+        "nullable": false,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "decision",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACCEPTE, REFUSE",
+        "example": "ACCEPTE",
+        "nullable": false,
+        "ref": null,
+        "check": "decision IN ('ACCEPTE','REFUSE')"
+      },
+      {
+        "name": "recorded_by",
+        "type": "uuid",
+        "meaning": "Compte ayant enregistré",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "proof_file_id",
+        "type": "uuid",
+        "meaning": "Pièce de preuve",
+        "example": "UUID de files",
+        "nullable": true,
+        "ref": "files",
+        "check": null
+      },
+      {
+        "name": "proof",
+        "type": "jsonb",
+        "meaning": "Canal, date client, contact et justification",
+        "example": "{\"channel\":\"email\",\"contact_id\":\"uuid\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "decided_at",
+        "type": "timestamptz",
+        "meaning": "Date décision",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "quote_version_id"
+      ]
+    ],
+    "checks": []
+  },
+  "generation_jobs": {
+    "scope": "M",
+    "meaning": "Traitement durable et sa proposition candidate",
+    "columns": [
+      {
+        "name": "quote_id",
+        "type": "uuid",
+        "meaning": "Devis cible",
+        "example": "UUID de quotes",
+        "nullable": false,
+        "ref": "quotes",
+        "check": null
+      },
+      {
+        "name": "requirement_revision_id",
+        "type": "uuid",
+        "meaning": "Entrée immuable",
+        "example": "UUID de requirement_revisions",
+        "nullable": false,
+        "ref": "requirement_revisions",
+        "check": null
+      },
+      {
+        "name": "base_version_id",
+        "type": "uuid",
+        "meaning": "Brouillon à préserver",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "base_edit_revision",
+        "type": "integer",
+        "meaning": "Révision d’édition au lancement",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "catalog_revision_id",
+        "type": "uuid",
+        "meaning": "Catalogue utilisé",
+        "example": "UUID de catalog_revisions",
+        "nullable": false,
+        "ref": "catalog_revisions",
+        "check": null
+      },
+      {
+        "name": "knowledge_release_id",
+        "type": "uuid",
+        "meaning": "Règles communes",
+        "example": "UUID de knowledge_releases",
+        "nullable": false,
+        "ref": "knowledge_releases",
+        "check": null
+      },
+      {
+        "name": "input_snapshot",
+        "type": "jsonb",
+        "meaning": "Contenu complet minimisé / configurations / modèle",
+        "example": "{\"schema_version\":1,\"prompt_version\":\"1\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "input_hash",
+        "type": "text",
+        "meaning": "Empreinte entrée",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : EN_ATTENTE, EN_COURS, A_REPRENDRE, REUSSI, OBSOLETE, ECHEC, ANNULE",
+        "example": "EN_ATTENTE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('EN_ATTENTE','EN_COURS','A_REPRENDRE','REUSSI','OBSOLETE','ECHEC','ANNULE')"
+      },
+      {
+        "name": "attempts",
+        "type": "integer",
+        "meaning": "Tentatives effectuées",
+        "example": "0",
+        "nullable": false,
+        "ref": null,
+        "check": "attempts >= 0 AND attempts <= 3"
+      },
+      {
+        "name": "lease_token",
+        "type": "bigint",
+        "meaning": "Token croissant de possession",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "lease_until",
+        "type": "timestamptz",
+        "meaning": "Fin lease",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "next_run_at",
+        "type": "timestamptz",
+        "meaning": "Prochaine exécution",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "result",
+        "type": "jsonb",
+        "meaning": "Proposition, questions, blocages, erreur ; pas un devis",
+        "example": "{\"schema_version\":1,\"lines\":[],\"blockers\":[]}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "requested_by",
+        "type": "uuid",
+        "meaning": "Acteur demandeur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "idempotency_keys": {
+    "scope": "M",
+    "meaning": "Déduplication de commandes par tenant/acteur/opération",
+    "columns": [
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "meaning": "Acteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "operation",
+        "type": "text",
+        "meaning": "Nom commande",
+        "example": "quote.generate",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "key",
+        "type": "text",
+        "meaning": "Clé client opaque",
+        "example": "UUID client",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "request_hash",
+        "type": "text",
+        "meaning": "Hash contenu commande",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "response",
+        "type": "jsonb",
+        "meaning": "Réponse stable, identifiant résultat",
+        "example": "{\"job_id\":\"uuid\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "expires_at",
+        "type": "timestamptz",
+        "meaning": "Conservation clé, ≥ durée utile",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "account_id",
+        "operation",
+        "key"
+      ]
+    ],
+    "checks": []
+  },
+  "ai_budget_periods": {
+    "scope": "M",
+    "meaning": "Plafond et réservations pour période UTC",
+    "columns": [
+      {
+        "name": "period",
+        "type": "text",
+        "meaning": "Mois UTC",
+        "example": "2026-10",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "limit_eur",
+        "type": "numeric(18,2)",
+        "meaning": "Plafond",
+        "example": "20",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "reserved_eur",
+        "type": "numeric(18,2)",
+        "meaning": "Provision jobs",
+        "example": "2",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "consumed_eur",
+        "type": "numeric(18,2)",
+        "meaning": "Coût connu ou provisionné",
+        "example": "3",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "period"
+      ]
+    ],
+    "checks": [
+      "limit_eur >= 0 AND reserved_eur >= 0 AND consumed_eur >= 0",
+      "reserved_eur + consumed_eur <= limit_eur"
+    ]
+  },
+  "ai_usage": {
+    "scope": "M",
+    "meaning": "Usage par tentative, y compris issue inconnue",
+    "columns": [
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "meaning": "Job",
+        "example": "UUID de generation_jobs",
+        "nullable": false,
+        "ref": "generation_jobs",
+        "check": null
+      },
+      {
+        "name": "attempt",
+        "type": "integer",
+        "meaning": "Numéro tentative",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "attempt > 0"
+      },
+      {
+        "name": "provider_request_id",
+        "type": "text",
+        "meaning": "Identifiant fournisseur si connu",
+        "example": "req-example",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "model",
+        "type": "text",
+        "meaning": "Identifiant exact modèle",
+        "example": "modele-configure",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "input_tokens",
+        "type": "integer",
+        "meaning": "Jetons connus ou 0 si inconnus",
+        "example": "1000",
+        "nullable": false,
+        "ref": null,
+        "check": "input_tokens >= 0"
+      },
+      {
+        "name": "output_tokens",
+        "type": "integer",
+        "meaning": "Jetons connus ou 0 si inconnus",
+        "example": "300",
+        "nullable": false,
+        "ref": null,
+        "check": "output_tokens >= 0"
+      },
+      {
+        "name": "cost_eur",
+        "type": "numeric(18,2)",
+        "meaning": "Coût estimé/mesuré EUR",
+        "example": "0.02",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "cost_state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : MESURE, ESTIME, INCONNU",
+        "example": "MESURE",
+        "nullable": false,
+        "ref": null,
+        "check": "cost_state IN ('MESURE','ESTIME','INCONNU')"
+      },
+      {
+        "name": "tariff_version",
+        "type": "text",
+        "meaning": "Tarif daté",
+        "example": "tarif-2026-10",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "job_id",
+        "attempt"
+      ]
+    ],
+    "checks": []
+  },
+  "sites": {
+    "scope": "E1",
+    "meaning": "Chantier issu d’un devis accepté",
+    "columns": [
+      {
+        "name": "quote_id",
+        "type": "uuid",
+        "meaning": "Devis origine",
+        "example": "UUID de quotes",
+        "nullable": false,
+        "ref": "quotes",
+        "check": null
+      },
+      {
+        "name": "reference_quote_version_id",
+        "type": "uuid",
+        "meaning": "Version acceptée de référence",
+        "example": "UUID de quote_versions",
+        "nullable": false,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "client_id",
+        "type": "uuid",
+        "meaning": "Bénéficiaire",
+        "example": "UUID de clients",
+        "nullable": false,
+        "ref": "clients",
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : PREPARATION, EN_COURS, SUSPENDU, A_RECEVOIR, RESERVES, RECEPTIONNE, CLOTURE, ANNULE",
+        "example": "PREPARATION",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('PREPARATION','EN_COURS','SUSPENDU','A_RECEVOIR','RESERVES','RECEPTIONNE','CLOTURE','ANNULE')"
+      },
+      {
+        "name": "baseline_revision",
+        "type": "integer",
+        "meaning": "Révision contractuelle courante",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "baseline_revision > 0"
+      },
+      {
+        "name": "contract_total_ht",
+        "type": "numeric(18,2)",
+        "meaning": "Devis référence + avenants acceptés EUR",
+        "example": "302.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "archived_at",
+        "type": "timestamptz",
+        "meaning": "Archivage",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "quote_id"
+      ]
+    ],
+    "checks": []
+  },
+  "site_access": {
+    "scope": "E1",
+    "meaning": "Accès portail limité à un chantier",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "meaning": "Compte client",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "contact_id",
+        "type": "uuid",
+        "meaning": "Contact justificatif",
+        "example": "UUID de client_contacts",
+        "nullable": true,
+        "ref": "client_contacts",
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACTIF, REVOQUE",
+        "example": "ACTIF",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('ACTIF','REVOQUE')"
+      }
+    ],
+    "unique": [
+      [
+        "site_id",
+        "account_id"
+      ]
+    ],
+    "checks": []
+  },
+  "site_stages": {
+    "scope": "E1",
+    "meaning": "Étape pondérée pour avancement",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "name",
+        "type": "text",
+        "meaning": "Nom étape",
+        "example": "Préparation support",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "weight",
+        "type": "numeric(18,6)",
+        "meaning": "Poids positif",
+        "example": "2",
+        "nullable": false,
+        "ref": null,
+        "check": "weight > 0"
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "site_tasks": {
+    "scope": "E1",
+    "meaning": "Tâche et description de progression",
+    "columns": [
+      {
+        "name": "stage_id",
+        "type": "uuid",
+        "meaning": "Étape",
+        "example": "UUID de site_stages",
+        "nullable": false,
+        "ref": "site_stages",
+        "check": null
+      },
+      {
+        "name": "description",
+        "type": "text",
+        "meaning": "Travail à réaliser",
+        "example": "Protéger les surfaces",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "progress",
+        "type": "numeric(18,6)",
+        "meaning": "Fraction de 0 à 1",
+        "example": "0.5",
+        "nullable": false,
+        "ref": null,
+        "check": "progress >= 0 AND progress <= 1"
+      },
+      {
+        "name": "weight",
+        "type": "numeric(18,6)",
+        "meaning": "Poids tâche",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "weight > 0"
+      },
+      {
+        "name": "assigned_membership_id",
+        "type": "uuid",
+        "meaning": "Responsable affecté",
+        "example": "UUID de memberships",
+        "nullable": true,
+        "ref": "memberships",
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "site_media": {
+    "scope": "E1",
+    "meaning": "Photo et visibilité contrôlée",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "file_id",
+        "type": "uuid",
+        "meaning": "Image analysée",
+        "example": "UUID de files",
+        "nullable": false,
+        "ref": "files",
+        "check": null
+      },
+      {
+        "name": "created_by",
+        "type": "uuid",
+        "meaning": "Auteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "visibility",
+        "type": "text",
+        "meaning": "Valeur contrôlée : INTERNE, CLIENT",
+        "example": "INTERNE",
+        "nullable": false,
+        "ref": null,
+        "check": "visibility IN ('INTERNE','CLIENT')"
+      },
+      {
+        "name": "taken_at",
+        "type": "timestamptz",
+        "meaning": "Date capture déclarée",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "site_messages": {
+    "scope": "E1",
+    "meaning": "Message privé ou publié",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "author_id",
+        "type": "uuid",
+        "meaning": "Auteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "body",
+        "type": "text",
+        "meaning": "Texte sans commande IA",
+        "example": "Demande de changement",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "visibility",
+        "type": "text",
+        "meaning": "Valeur contrôlée : INTERNE, CLIENT",
+        "example": "INTERNE",
+        "nullable": false,
+        "ref": null,
+        "check": "visibility IN ('INTERNE','CLIENT')"
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "scope_changes": {
+    "scope": "E1",
+    "meaning": "Changement confirmé avec source et delta",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "reference",
+        "type": "text",
+        "meaning": "Identifiant de changement dédupliqué",
+        "example": "CHG-001",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : SUGGERE, CONFIRME, REJETE, COUVERT",
+        "example": "SUGGERE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('SUGGERE','CONFIRME','REJETE','COUVERT')"
+      },
+      {
+        "name": "delta_quantity",
+        "type": "numeric(18,6)",
+        "meaning": "Écart, peut être négatif",
+        "example": "40",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "evidence",
+        "type": "jsonb",
+        "meaning": "Origine, poste de référence et justification",
+        "example": "{\"message_id\":\"uuid\",\"reason\":\"40 m2 supplémentaires\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "site_id",
+        "reference"
+      ]
+    ],
+    "checks": []
+  },
+  "amendments": {
+    "scope": "E1",
+    "meaning": "Avenant pour un changement de périmètre",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "scope_change_id",
+        "type": "uuid",
+        "meaning": "Changement",
+        "example": "UUID de scope_changes",
+        "nullable": false,
+        "ref": "scope_changes",
+        "check": null
+      },
+      {
+        "name": "reference_quote_version_id",
+        "type": "uuid",
+        "meaning": "Devis accepté de référence",
+        "example": "UUID de quote_versions",
+        "nullable": false,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "reference",
+        "type": "text",
+        "meaning": "Référence commerciale",
+        "example": "AV-001",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "scope_change_id"
+      ],
+      [
+        "site_id",
+        "reference"
+      ]
+    ],
+    "checks": []
+  },
+  "amendment_versions": {
+    "scope": "E1",
+    "meaning": "Version avenant et baseline attendue",
+    "columns": [
+      {
+        "name": "amendment_id",
+        "type": "uuid",
+        "meaning": "Avenant",
+        "example": "UUID de amendments",
+        "nullable": false,
+        "ref": "amendments",
+        "check": null
+      },
+      {
+        "name": "number",
+        "type": "integer",
+        "meaning": "Version commerciale",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": "number > 0"
+      },
+      {
+        "name": "edit_revision",
+        "type": "integer",
+        "meaning": "Concurrence édition",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "baseline_revision",
+        "type": "integer",
+        "meaning": "Baseline attendue",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : BROUILLON, EN_REVUE, VALIDE, ENVOYE, ACCEPTE, REFUSE, EXPIRE, REMPLACE, ABANDONNE",
+        "example": "BROUILLON",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('BROUILLON','EN_REVUE','VALIDE','ENVOYE','ACCEPTE','REFUSE','EXPIRE','REMPLACE','ABANDONNE')"
+      },
+      {
+        "name": "pricing_snapshot",
+        "type": "jsonb",
+        "meaning": "Conditions figées de calcul et sources",
+        "example": "{\"schema_version\":1}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "delta_ht",
+        "type": "numeric(18,2)",
+        "meaning": "Delta vente HT EUR",
+        "example": "302.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "delta_tax",
+        "type": "numeric(18,2)",
+        "meaning": "Delta taxe EUR",
+        "example": "60.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "delta_ttc",
+        "type": "numeric(18,2)",
+        "meaning": "Delta TTC EUR",
+        "example": "363.00",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "content_hash",
+        "type": "text",
+        "meaning": "Hash contenu",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "valid_until",
+        "type": "timestamptz",
+        "meaning": "Expiration",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "frozen_at",
+        "type": "timestamptz",
+        "meaning": "Gel",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "amendment_id",
+        "number"
+      ]
+    ],
+    "checks": [
+      "delta_ttc = delta_ht + delta_tax"
+    ]
+  },
+  "amendment_lines": {
+    "scope": "E1",
+    "meaning": "Ligne de delta, suppression possible avec motif",
+    "columns": [
+      {
+        "name": "amendment_version_id",
+        "type": "uuid",
+        "meaning": "Version",
+        "example": "UUID de amendment_versions",
+        "nullable": false,
+        "ref": "amendment_versions",
+        "check": null
+      },
+      {
+        "name": "position",
+        "type": "integer",
+        "meaning": "Ordre",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "label",
+        "type": "text",
+        "meaning": "Libellé",
+        "example": "Peinture supplémentaire",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "unit_id",
+        "type": "uuid",
+        "meaning": "Unité",
+        "example": "UUID de units",
+        "nullable": false,
+        "ref": "units",
+        "check": null
+      },
+      {
+        "name": "delta_quantity",
+        "type": "numeric(18,6)",
+        "meaning": "Quantité ajoutée ou retirée",
+        "example": "40",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "sale_unit_price",
+        "type": "numeric(18,6)",
+        "meaning": "Vente HT EUR unitaire",
+        "example": "7.5625",
+        "nullable": false,
+        "ref": null,
+        "check": "sale_unit_price >= 0"
+      },
+      {
+        "name": "tax_rate",
+        "type": "numeric(9,6)",
+        "meaning": "Taxe ; fraction, pas pourcentage entier",
+        "example": "0.2",
+        "nullable": false,
+        "ref": null,
+        "check": "tax_rate >= 0 AND tax_rate < 1"
+      },
+      {
+        "name": "amount_ht",
+        "type": "numeric(18,2)",
+        "meaning": "Delta ligne arrondi EUR",
+        "example": "302.50",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "provenance",
+        "type": "jsonb",
+        "meaning": "Sources et frais déjà couverts",
+        "example": "{\"schema_version\":1,\"source_change\":\"uuid\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "amendment_version_id",
+        "position"
+      ]
+    ],
+    "checks": []
+  },
+  "amendment_decisions": {
+    "scope": "E1",
+    "meaning": "Décision sur version avenant",
+    "columns": [
+      {
+        "name": "amendment_version_id",
+        "type": "uuid",
+        "meaning": "Version",
+        "example": "UUID de amendment_versions",
+        "nullable": false,
+        "ref": "amendment_versions",
+        "check": null
+      },
+      {
+        "name": "decision",
+        "type": "text",
+        "meaning": "Valeur contrôlée : ACCEPTE, REFUSE",
+        "example": "ACCEPTE",
+        "nullable": false,
+        "ref": null,
+        "check": "decision IN ('ACCEPTE','REFUSE')"
+      },
+      {
+        "name": "recorded_by",
+        "type": "uuid",
+        "meaning": "Acteur",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "proof",
+        "type": "jsonb",
+        "meaning": "Preuve et date, adaptée au canal",
+        "example": "{\"channel\":\"portal\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "decided_at",
+        "type": "timestamptz",
+        "meaning": "Date décision",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "amendment_version_id"
+      ]
+    ],
+    "checks": []
+  },
+  "pdf_documents": {
+    "scope": "M/E1",
+    "meaning": "PDF attaché à exactement une version",
+    "columns": [
+      {
+        "name": "quote_version_id",
+        "type": "uuid",
+        "meaning": "Version devis",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "amendment_version_id",
+        "type": "uuid",
+        "meaning": "Version avenant",
+        "example": "UUID de amendment_versions",
+        "nullable": true,
+        "ref": "amendment_versions",
+        "check": null
+      },
+      {
+        "name": "file_id",
+        "type": "uuid",
+        "meaning": "PDF prêt",
+        "example": "UUID de files",
+        "nullable": false,
+        "ref": "files",
+        "check": null
+      },
+      {
+        "name": "content_hash",
+        "type": "text",
+        "meaning": "Hash contenu de la version",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "pdf_hash",
+        "type": "text",
+        "meaning": "Hash fichier PDF",
+        "example": "64 caractères",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": [
+      "num_nonnulls(quote_version_id, amendment_version_id) = 1"
+    ]
+  },
+  "deliveries": {
+    "scope": "M/E1",
+    "meaning": "Commande d’envoi avec état distinct du devis",
+    "columns": [
+      {
+        "name": "quote_version_id",
+        "type": "uuid",
+        "meaning": "Version devis",
+        "example": "UUID de quote_versions",
+        "nullable": true,
+        "ref": "quote_versions",
+        "check": null
+      },
+      {
+        "name": "amendment_version_id",
+        "type": "uuid",
+        "meaning": "Version avenant",
+        "example": "UUID de amendment_versions",
+        "nullable": true,
+        "ref": "amendment_versions",
+        "check": null
+      },
+      {
+        "name": "pdf_document_id",
+        "type": "uuid",
+        "meaning": "PDF exact",
+        "example": "UUID de pdf_documents",
+        "nullable": false,
+        "ref": "pdf_documents",
+        "check": null
+      },
+      {
+        "name": "recipient_email",
+        "type": "text",
+        "meaning": "Destinataire figé/vérifié",
+        "example": "client@example.test",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "dedupe_key",
+        "type": "text",
+        "meaning": "Clé stable de livraison",
+        "example": "delivery-uuid",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : EN_ATTENTE, EN_COURS, CONFIRME, ECHEC, INCERTAIN",
+        "example": "EN_ATTENTE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('EN_ATTENTE','EN_COURS','CONFIRME','ECHEC','INCERTAIN')"
+      },
+      {
+        "name": "provider_id",
+        "type": "text",
+        "meaning": "Identifiant prestataire",
+        "example": "mail-example",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "authorized_by",
+        "type": "uuid",
+        "meaning": "Personne qui a cliqué envoyer",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "dedupe_key"
+      ]
+    ],
+    "checks": [
+      "num_nonnulls(quote_version_id, amendment_version_id) = 1"
+    ]
+  },
+  "outbox": {
+    "scope": "M",
+    "meaning": "Événements transactionnels à transmettre",
+    "columns": [
+      {
+        "name": "event_key",
+        "type": "text",
+        "meaning": "Clé unique de l’effet",
+        "example": "quote-version-uuid-send",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "kind",
+        "type": "text",
+        "meaning": "Type effet",
+        "example": "SEND_QUOTE",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "payload",
+        "type": "jsonb",
+        "meaning": "IDs, version, cible ; pas secret",
+        "example": "{\"delivery_id\":\"uuid\"}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : EN_ATTENTE, EN_COURS, CONFIRME, ECHEC, INCERTAIN",
+        "example": "EN_ATTENTE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('EN_ATTENTE','EN_COURS','CONFIRME','ECHEC','INCERTAIN')"
+      },
+      {
+        "name": "attempts",
+        "type": "integer",
+        "meaning": "Tentatives",
+        "example": "0",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "lease_token",
+        "type": "bigint",
+        "meaning": "Token de lease",
+        "example": "1",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "lease_until",
+        "type": "timestamptz",
+        "meaning": "Fin lease",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": true,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "next_run_at",
+        "type": "timestamptz",
+        "meaning": "Prochaine reprise",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "event_key"
+      ]
+    ],
+    "checks": []
+  },
+  "audit_events": {
+    "scope": "M",
+    "meaning": "Événement métier append-only",
+    "columns": [
+      {
+        "name": "actor_id",
+        "type": "uuid",
+        "meaning": "Acteur, null si système",
+        "example": "UUID de accounts",
+        "nullable": true,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "action",
+        "type": "text",
+        "meaning": "Nom action",
+        "example": "quote.validated",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "entity_type",
+        "type": "text",
+        "meaning": "Type objet",
+        "example": "quote_version",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "entity_id",
+        "type": "uuid",
+        "meaning": "ID objet dans tenant ; contrôlé par commande",
+        "example": "UUID",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "correlation_id",
+        "type": "text",
+        "meaning": "Chaîne corrélation",
+        "example": "request-uuid",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "details",
+        "type": "jsonb",
+        "meaning": "Version, empreinte et motif, sans contenu complet",
+        "example": "{\"number\":1}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "feedback": {
+    "scope": "M/E3",
+    "meaning": "Retour privé et autorisation éventuelle de publication",
+    "columns": [
+      {
+        "name": "job_id",
+        "type": "uuid",
+        "meaning": "Génération",
+        "example": "UUID de generation_jobs",
+        "nullable": true,
+        "ref": "generation_jobs",
+        "check": null
+      },
+      {
+        "name": "comment",
+        "type": "text",
+        "meaning": "Correction privée",
+        "example": "Poste protection manquant",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "sharing",
+        "type": "text",
+        "meaning": "Valeur contrôlée : PRIVE, PROPOSE_COMMUN, AUTORISE, REJETE",
+        "example": "PRIVE",
+        "nullable": false,
+        "ref": null,
+        "check": "sharing IN ('PRIVE','PROPOSE_COMMUN','AUTORISE','REJETE')"
+      },
+      {
+        "name": "sharing_authorization",
+        "type": "jsonb",
+        "meaning": "Finalité, acteur habilité, droits et date",
+        "example": "{\"schema_version\":1,\"allowed\":false}",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "release_id",
+        "type": "uuid",
+        "meaning": "Publication approuvée",
+        "example": "UUID de knowledge_releases",
+        "nullable": true,
+        "ref": "knowledge_releases",
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "calendar_reservations": {
+    "scope": "internal",
+    "meaning": "Calendrier global privé : aucun accès direct via API tenant",
+    "columns": [
+      {
+        "name": "tenant_id",
+        "type": "uuid",
+        "meaning": "Entreprise origine, jamais divulguée aux autres",
+        "example": "UUID de tenants",
+        "nullable": false,
+        "ref": "tenants",
+        "check": null
+      },
+      {
+        "name": "account_id",
+        "type": "uuid",
+        "meaning": "Personne",
+        "example": "UUID de accounts",
+        "nullable": false,
+        "ref": "accounts",
+        "check": null
+      },
+      {
+        "name": "period",
+        "type": "tstzrange",
+        "meaning": "Intervalle UTC [début, fin)",
+        "example": "[2026-10-02T08:00Z,2026-10-02T10:00Z)",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "kind",
+        "type": "text",
+        "meaning": "Valeur contrôlée : AFFECTATION, ABSENCE",
+        "example": "AFFECTATION",
+        "nullable": false,
+        "ref": null,
+        "check": "kind IN ('AFFECTATION','ABSENCE')"
+      },
+      {
+        "name": "active",
+        "type": "boolean",
+        "meaning": "Réservation bloquante active",
+        "example": "true",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "tenant_id",
+        "id"
+      ]
+    ],
+    "checks": [
+      "NOT isempty(period) AND NOT lower_inf(period) AND NOT upper_inf(period) AND lower_inc(period) AND NOT upper_inc(period)"
+    ]
+  },
+  "assignments": {
+    "scope": "E2",
+    "meaning": "Détail tenant d’une réservation",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "membership_id",
+        "type": "uuid",
+        "meaning": "Employé membre",
+        "example": "UUID de memberships",
+        "nullable": false,
+        "ref": "memberships",
+        "check": null
+      },
+      {
+        "name": "calendar_reservation_id",
+        "type": "uuid",
+        "meaning": "Réserve globale du même tenant",
+        "example": "UUID de calendar_reservations",
+        "nullable": false,
+        "ref": "calendar_reservations",
+        "check": null
+      }
+    ],
+    "unique": [
+      [
+        "calendar_reservation_id"
+      ]
+    ],
+    "checks": []
+  },
+  "leave_requests": {
+    "scope": "E2",
+    "meaning": "Absence proposée puis approuvée avec réserve",
+    "columns": [
+      {
+        "name": "membership_id",
+        "type": "uuid",
+        "meaning": "Membre",
+        "example": "UUID de memberships",
+        "nullable": false,
+        "ref": "memberships",
+        "check": null
+      },
+      {
+        "name": "period",
+        "type": "tstzrange",
+        "meaning": "Dates UTC proposées",
+        "example": "[2026-10-03T00:00Z,2026-10-04T00:00Z)",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : DEMANDEE, APPROUVEE, REFUSEE, ANNULEE",
+        "example": "DEMANDEE",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('DEMANDEE','APPROUVEE','REFUSEE','ANNULEE')"
+      },
+      {
+        "name": "calendar_reservation_id",
+        "type": "uuid",
+        "meaning": "Réservation absence",
+        "example": "UUID de calendar_reservations",
+        "nullable": true,
+        "ref": "calendar_reservations",
+        "check": null
+      },
+      {
+        "name": "approved_by",
+        "type": "uuid",
+        "meaning": "Approbateur",
+        "example": "UUID de accounts",
+        "nullable": true,
+        "ref": "accounts",
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": []
+  },
+  "time_entries": {
+    "scope": "E2",
+    "meaning": "Temps constaté ; pas de calcul de paie",
+    "columns": [
+      {
+        "name": "site_id",
+        "type": "uuid",
+        "meaning": "Chantier",
+        "example": "UUID de sites",
+        "nullable": false,
+        "ref": "sites",
+        "check": null
+      },
+      {
+        "name": "membership_id",
+        "type": "uuid",
+        "meaning": "Membre",
+        "example": "UUID de memberships",
+        "nullable": false,
+        "ref": "memberships",
+        "check": null
+      },
+      {
+        "name": "started_at",
+        "type": "timestamptz",
+        "meaning": "Début UTC",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "ended_at",
+        "type": "timestamptz",
+        "meaning": "Fin UTC",
+        "example": "2026-10-01T20:00:00Z",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      },
+      {
+        "name": "state",
+        "type": "text",
+        "meaning": "Valeur contrôlée : BROUILLON, SOUMIS, APPROUVE",
+        "example": "BROUILLON",
+        "nullable": false,
+        "ref": null,
+        "check": "state IN ('BROUILLON','SOUMIS','APPROUVE')"
+      },
+      {
+        "name": "category",
+        "type": "text",
+        "meaning": "Catégorie selon politique validée",
+        "example": "TRAVAIL",
+        "nullable": false,
+        "ref": null,
+        "check": null
+      }
+    ],
+    "unique": [],
+    "checks": [
+      "ended_at > started_at"
+    ]
+  }
+}
