@@ -1,0 +1,19 @@
+flowchart TB
+ F[Fichier en quarantaine] --> P[Parser sans exécuter le contenu]
+ P --> S[Snapshot du besoin et de ses sources]
+ S --> X[Extraction structurée de faits]
+ X --> B[Analyse des travaux et contraintes]
+ B --> R[Recherche de références autorisées]
+ Cat[Catalogue privé du tenant] --> R
+ Com[Règles communes versionnées] --> B
+ R --> J[Proposition JSON sans prix inventé]
+ J --> V[Validation du schéma et des références]
+ V --> C[Contrôles métier et omissions]
+ C --> Q{Champs critiques manquants ?}
+ Q -->|Oui| Dem[Questions et blocages]
+ Q -->|Non| Calc[Calcul déterministe décimal]
+ Calc --> H[Revue professionnelle]
+ Dem --> H
+ V -->|Structure invalide| E[Échec technique traçable]
+ H -->|Corrections| S
+ H -->|Autorisation distincte| Fin[Version validée]

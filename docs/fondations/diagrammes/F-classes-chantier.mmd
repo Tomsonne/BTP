@@ -1,0 +1,37 @@
+classDiagram
+ direction TB
+ class Chantier {
+  +Etat etat
+  +int baselineRevision
+  +accepterAvenant()
+ }
+ class VersionDevis {
+  +Etat ACCEPTE
+ }
+ class Etape {
+  +Decimal poids
+ }
+ class Tache {
+  +Decimal avancement
+ }
+ class ChangementPerimetre {
+  +Decimal deltaQuantite
+  +String justification
+ }
+ class Avenant {
+  +UUID changementId
+ }
+ class VersionAvenant {
+  +int baselineRevision
+  +Decimal deltaHT
+ }
+ class Affectation {
+  +Intervalle plage
+ }
+ Chantier "0..1" --> "1" VersionDevis : référence acceptée
+ Chantier "1" *-- "0..*" Etape : organise
+ Etape "1" *-- "0..*" Tache : suit
+ Chantier "1" --> "0..*" ChangementPerimetre : déclare
+ ChangementPerimetre "1" --> "0..1" Avenant : chiffre
+ Avenant "1" *-- "0..*" VersionAvenant : historique
+ Chantier "1" --> "0..*" Affectation : ressources

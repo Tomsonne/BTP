@@ -1,0 +1,46 @@
+@startuml
+!pragma layout smetana
+top to bottom direction
+skinparam shadowing false
+node "Poste de développement" {
+ artifact "Web + API + Worker" as Dev
+ database "PostgreSQL local" as DDB
+ folder "Objets locaux fictifs" as DObj
+ Dev --> DDB
+ Dev --> DObj
+}
+node "Préproduction isolée" {
+ artifact "Web / API / Worker" as Pre
+ database "DB préproduction" as PDB
+ folder "Bucket préproduction" as PObj
+ Pre --> PDB
+ Pre --> PObj
+}
+node "Production" {
+ node "Entrée TLS publique" as TLS
+ node "Réseau privé" {
+  artifact "API" as API
+  artifact "Worker" as Worker
+  database "PostgreSQL persistant" as DB
+  folder "Stockage objet privé" as Obj
+ }
+ node "Gestionnaire secrets" as Secrets
+ node "Supervision" as Obs
+ folder "Sauvegardes chiffrées isolées" as Backup
+ TLS --> API : HTTPS
+ API --> DB
+ Worker --> DB
+ API --> Obj
+ Worker --> Obj
+ Secrets --> API
+ Secrets --> Worker
+ API --> Obs
+ Worker --> Obs
+ DB --> Backup
+ Obj --> Backup
+}
+cloud "IA / email externes" as External
+Worker --> External : sortie TLS contrôlée
+Dev --> Pre : CI, migrations et tests
+Pre --> API : promotion artefact validé
+@enduml

@@ -1,0 +1,20 @@
+flowchart TB
+ A[Devis accepté] --> B[Créer chantier idempotent]
+ B --> C[Préparer étapes, poids et accès]
+ C --> D[Affecter équipe et dates]
+ D --> E[Démarrer travaux]
+ E --> F[Suivre tâches, photos et messages]
+ F --> G{Changement de périmètre ?}
+ G -->|Oui| H[Déclarer et chiffrer avenant]
+ H --> I{Accepté ?}
+ I -->|Oui| J[Actualiser baseline et planning]
+ I -->|Non| K[Conserver périmètre accepté]
+ J --> F
+ K --> F
+ G -->|Non| L{Travaux terminés ?}
+ L -->|Non| F
+ L -->|Oui| M[Préparer réception et preuves]
+ M --> N{Réserves ?}
+ N -->|Oui| O[Lever réserves et tracer]
+ O --> M
+ N -->|Non| P[Réceptionner puis clôturer]

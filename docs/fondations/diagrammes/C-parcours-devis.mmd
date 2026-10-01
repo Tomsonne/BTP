@@ -1,0 +1,30 @@
+flowchart TB
+ A[Créer client et besoin] --> B[Importer ou saisir]
+ B --> C{Document exploitable ?}
+ C -->|Non| D[Corriger ou saisir manuellement]
+ D --> B
+ C -->|Oui| E[Lancer génération ou composer]
+ E --> F{Résultat exploitable ?}
+ F -->|Échec technique| G[Diagnostic, reprise ou saisie]
+ G --> E
+ F -->|Obsolète| H[Comparer et relancer]
+ H --> E
+ F -->|Oui| I{Données indispensables ?}
+ I -->|Manquantes| J[Questions et nouvelle révision]
+ J --> E
+ I -->|Complètes| K[Créer brouillon et corriger]
+ K --> L[Calcul et contrôles]
+ L --> M{Blocage ou estimation non confirmée ?}
+ M -->|Oui| K
+ M -->|Non| N[Demander revue]
+ N --> O{Revue approuvée ?}
+ O -->|Non| K
+ O -->|Oui| P[Figer version et produire PDF]
+ P --> Q{PDF prêt ?}
+ Q -->|Non| R[Reprendre rendu PDF]
+ R --> P
+ Q -->|Oui| S[Action explicite envoyer]
+ S --> T{Envoi confirmé ?}
+ T -->|Échec ou incertain| U[Rapprocher avant reprise]
+ U --> S
+ T -->|Oui| V[Enregistrer décision sur version]

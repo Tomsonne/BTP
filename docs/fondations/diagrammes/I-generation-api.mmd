@@ -1,0 +1,29 @@
+sequenceDiagram
+ autonumber
+ participant U as Utilisateur
+ participant API as API
+ participant DB as PostgreSQL
+ participant W as Worker
+ U->>API: Générer, clé et révision
+ API->>DB: Transaction accès, snapshot, budget, job unique
+ alt Même clé et même contenu
+ DB-->>API: Job existant
+ else Nouveau job
+ DB-->>API: Job créé
+ end
+ API-->>U: 202 et job_id
+ W->>DB: Prendre lease et snapshot
+ W->>W: Traitement décrit dans I-generation-worker
+ W->>DB: Finaliser avec token et révision
+ U->>API: Lire état du job
+ API->>DB: Lire résultat dans tenant
+ API-->>U: Proposition, questions ou erreur
+ U->>API: Appliquer proposition, If-Match et clé
+ API->>DB: Transaction verrou devis et vérifier fraîcheur
+ alt Révision changée ou devis accepté
+ DB-->>API: Refus sans modification
+ API-->>U: 409 et comparaison proposée
+ else Courant et autorisé
+ DB-->>API: Nouvelle version BROUILLON
+ API-->>U: Version et blocages
+ end

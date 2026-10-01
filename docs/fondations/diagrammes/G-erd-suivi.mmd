@@ -1,0 +1,44 @@
+erDiagram
+ direction TB
+ site_media {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid file_id FK
+  uuid created_by FK
+ }
+ site_messages {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid author_id FK
+ }
+ scope_changes {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  text reference
+  text state
+  uuid unit_id FK
+ }
+ sites {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ files {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ units {
+  uuid id PK
+ }
+ sites ||--o{ site_media : site_id
+ files ||--o{ site_media : file_id
+ accounts ||--o{ site_media : created_by
+ sites ||--o{ site_messages : site_id
+ accounts ||--o{ site_messages : author_id
+ sites ||--o{ scope_changes : site_id
+ units ||--o{ scope_changes : unit_id

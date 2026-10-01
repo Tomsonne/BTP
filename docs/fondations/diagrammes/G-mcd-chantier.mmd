@@ -1,0 +1,15 @@
+erDiagram
+ direction TB
+ VERSION_DEVIS ||--o| CHANTIER : ouvre
+ CHANTIER ||--o{ ETAPE : organise
+ ETAPE ||--o{ TACHE : contient
+ CHANTIER ||--o{ MEDIA : documente
+ CHANTIER ||--o{ MESSAGE : échange
+ CHANTIER ||--o{ CHANGEMENT : constate
+ CHANGEMENT ||--o| AVENANT : chiffre
+ AVENANT ||--o{ VERSION_AVENANT : versionne
+ VERSION_AVENANT ||--o{ LIGNE_AVENANT : contient
+ VERSION_AVENANT ||--o| DECISION_AVENANT : reçoit
+ COMPTE ||--o{ RESERVATION_CALENDRIER : réserve
+ RESERVATION_CALENDRIER ||--o| AFFECTATION : précise
+ CHANTIER ||--o{ AFFECTATION : mobilise

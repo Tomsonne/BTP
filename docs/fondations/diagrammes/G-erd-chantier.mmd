@@ -1,0 +1,62 @@
+erDiagram
+ direction TB
+ sites {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_id FK
+  uuid reference_quote_version_id FK
+  uuid client_id FK
+  text state
+  integer baseline_revision
+ }
+ site_access {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid account_id FK
+  uuid contact_id FK
+  text state
+ }
+ site_stages {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+ }
+ site_tasks {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid stage_id FK
+  uuid assigned_membership_id FK
+ }
+ quotes {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ quote_versions {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ clients {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ client_contacts {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ memberships {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ quotes ||--o| sites : quote_id
+ quote_versions ||--o{ sites : reference_quote_version_id
+ clients ||--o{ sites : client_id
+ sites ||--o{ site_access : site_id
+ accounts ||--o{ site_access : account_id
+ client_contacts o|--o{ site_access : contact_id
+ sites ||--o{ site_stages : site_id
+ site_stages ||--o{ site_tasks : stage_id
+ memberships o|--o{ site_tasks : assigned_membership_id

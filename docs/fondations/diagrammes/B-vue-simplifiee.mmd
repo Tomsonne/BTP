@@ -1,0 +1,15 @@
+flowchart TB
+ AP[Admin plateforme] --> Ops[Exploitation et quotas - MVP]
+ AE[Admin entreprise] --> Ges[Membres et catalogue - MVP]
+ AE --> Val[Validation et envoi - MVP]
+ DV[Chargé de devis] --> Dev[Préparer et corriger - MVP]
+ DV -->|Délégation| Val
+ CH[Chef de chantier] --> Site[Chantier et avenant - E1]
+ CH --> Plan[Planning - E2]
+ EM[Employé] --> Act[Activité affectée - E1/E2]
+ CL[Client] --> Por[Contenu publié et décision - E1]
+ AP ~~~ AE
+ AE ~~~ DV
+ DV ~~~ CH
+ CH ~~~ EM
+ EM ~~~ CL

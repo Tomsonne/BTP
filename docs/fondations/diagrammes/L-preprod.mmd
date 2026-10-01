@@ -1,0 +1,24 @@
+flowchart TB
+ subgraph Env[Environnement preprod]
+  direction TB
+  Web[Web et entrée TLS]
+  API[API]
+  W[Worker]
+  DB[(PostgreSQL persistant)]
+  Obj[Objets privés]
+  Sec[Secrets propres à cet environnement]
+  Mon[Logs, métriques et alertes]
+  Bak[Sauvegardes et restauration]
+ end
+ Web --> API
+ API --> DB
+ W --> DB
+ API --> Obj
+ W --> Obj
+ Sec --> API
+ Sec --> W
+ API --> Mon
+ W --> Mon
+ DB --> Bak
+ Obj --> Bak
+ W --> Ext[IA et email externes]

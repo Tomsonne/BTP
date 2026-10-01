@@ -1,0 +1,60 @@
+classDiagram
+ direction TB
+ class Entreprise {
+  +UUID id
+  +definirPolitiquePrix()
+ }
+ class BesoinRevision {
+  +int numero
+  +String hash
+ }
+ class Devis {
+  +UUID versionAcceptee
+  +creerVersion()
+ }
+ class VersionDevis {
+  +int numero
+  +int editRevision
+  +Etat etat
+  +recalculer()
+  +figer()
+ }
+ class LigneDevis {
+  +Decimal quantite
+  +Decimal prixVenteUnitaire
+  +String provenance
+ }
+ class OuvrageRevision {
+  +String uniteTravail
+  +developperRecette()
+ }
+ class ComposantOuvrage {
+  +Decimal consommation
+  +Decimal perte
+ }
+ class Ressource {
+  +Type type
+  +String unite
+ }
+ class Materiau {
+  +Decimal conditionnement
+ }
+ class PrixRessource {
+  +Decimal achat
+  +Date validite
+ }
+ class ComposantLigne {
+  +Decimal coutSnapshot
+  +bool facturable
+ }
+ Entreprise "1" --> "0..*" Devis : possède
+ Devis "1" *-- "0..*" VersionDevis : historique
+ BesoinRevision "1" --> "0..*" VersionDevis : source
+ VersionDevis "1" *-- "0..*" LigneDevis : contient
+ LigneDevis "0..*" --> "0..1" OuvrageRevision : référence
+ OuvrageRevision "1" *-- "1..*" ComposantOuvrage : recette
+ ComposantOuvrage "0..*" --> "1" Ressource : utilise
+ Ressource <|-- Materiau
+ Ressource "1" --> "0..*" PrixRessource : prix historiques
+ LigneDevis "1" *-- "0..*" ComposantLigne : détail analytique
+ ComposantLigne "0..*" --> "0..1" PrixRessource : origine

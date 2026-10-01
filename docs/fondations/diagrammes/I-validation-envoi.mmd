@@ -1,0 +1,25 @@
+sequenceDiagram
+ autonumber
+ participant U as Personne habilitée
+ participant API as API
+ participant DB as PostgreSQL
+ participant W as Worker
+ participant M as Email
+ U->>API: Valider EN_REVUE et If-Match
+ API->>DB: Transaction droits, contrôles, gel et outbox PDF
+ DB-->>API: VALIDE et snapshot hash
+ API-->>U: Version figée, PDF en préparation
+ W->>DB: Lire snapshot, produire PDF, enregistrer hash
+ U->>API: Envoyer explicitement, clé et destinataire
+ API->>DB: Transaction vérifier PDF/version, livraison unique
+ API-->>U: 202 et état de livraison
+ W->>DB: Prendre intention d'envoi et contrôler offre active
+ W->>M: Envoyer PDF figé avec clé fournisseur
+ alt Confirmation prestataire
+ M-->>W: Identifiant envoi
+ W->>DB: ENVOYE, offre active et audit atomiques
+ else Timeout ambigu
+ W->>DB: INCERTAIN, rapprochement nécessaire
+ else Échec certain
+ W->>DB: ECHEC, reprise autorisée selon cause
+ end

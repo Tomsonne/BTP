@@ -1,0 +1,18 @@
+flowchart TB
+ A[Déclaration ou suggestion IA] --> B[Chef confirme périmètre et source]
+ B --> C[Comparer à baseline courante]
+ C --> D{Déjà inclus ou déjà chiffré ?}
+ D -->|Oui| E[Rejeter doublon ou corriger]
+ D -->|Non| F[Quantifier delta et paramètres]
+ F --> G{Données suffisantes ?}
+ G -->|Non| H[Questions et précisions]
+ H --> F
+ G -->|Oui| I[Calcul delta sans frais dupliqués]
+ I --> J[Créer version avenant BROUILLON]
+ J --> K[Revue et validation humaine]
+ K --> L[PDF figé et envoi explicite]
+ L --> M{Décision sur baseline courante ?}
+ M -->|Baseline changée| R[Rebaser nouvelle version et revalider]
+ R --> C
+ M -->|Accepté| N[Transaction baseline et budget]
+ M -->|Refusé ou expiré| O[Aucun effet contractuel]

@@ -1,0 +1,21 @@
+sequenceDiagram
+ autonumber
+ participant H as Chef habilité
+ participant API as API
+ participant DB as PostgreSQL
+ participant C as Client ou preuve
+ H->>API: Confirmer changement, source et delta
+ API->>DB: Changement unique, baseline et brouillon
+ H->>API: Revoir, valider et envoyer explicitement
+ API->>DB: Version figée et outbox comme devis
+ C->>API: Décision, version et baseline attendue
+ API->>DB: Transaction verrou site puis avenant
+ alt Baseline différente ou changement déjà couvert
+ DB-->>API: Conflit sans modification
+ API-->>C: 409, nouvelle offre nécessaire
+ else Refus
+ DB-->>API: REFUSE, audit et baseline inchangée
+ else Acceptation valide
+ DB-->>API: ACCEPTE, baseline +1, delta budget, événement unique
+ API-->>C: Confirmation version acceptée
+ end

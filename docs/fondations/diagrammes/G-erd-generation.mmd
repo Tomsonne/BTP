@@ -1,0 +1,38 @@
+erDiagram
+ direction TB
+ generation_jobs {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_id FK
+  uuid requirement_revision_id FK
+  uuid base_version_id FK
+  uuid catalog_revision_id FK
+  uuid knowledge_release_id FK
+  text state
+  uuid requested_by FK
+ }
+ ai_usage {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid job_id FK
+ }
+ quotes {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ requirement_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ catalog_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ knowledge_releases {
+  uuid id PK
+ }
+ quotes ||--o{ generation_jobs : quote_id
+ requirement_revisions ||--o{ generation_jobs : requirement_revision_id
+ catalog_revisions ||--o{ generation_jobs : catalog_revision_id
+ knowledge_releases ||--o{ generation_jobs : knowledge_release_id
+ generation_jobs ||--o{ ai_usage : job_id

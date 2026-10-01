@@ -1,0 +1,17 @@
+stateDiagram-v2
+ direction TB
+ [*] --> EN_ATTENTE : snapshot et réservation budget
+ EN_ATTENTE --> EN_COURS : prise de lease
+ EN_COURS --> A_REPRENDRE : erreur transitoire et budget
+ A_REPRENDRE --> EN_COURS : backoff et nouvelle lease
+ EN_COURS --> REUSSI : schéma valide et source courante
+ EN_COURS --> OBSOLETE : source modifiée
+ EN_COURS --> ECHEC : erreur définitive ou tentatives épuisées
+ EN_ATTENTE --> ANNULE : révocation ou action habilitée
+ EN_COURS --> ANNULE : finalisation refusée après annulation
+ A_REPRENDRE --> ANNULE : action habilitée
+ REUSSI --> OBSOLETE : source changée avant application
+ REUSSI --> [*]
+ OBSOLETE --> [*]
+ ECHEC --> [*]
+ ANNULE --> [*]

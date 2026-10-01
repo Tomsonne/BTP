@@ -1,0 +1,66 @@
+erDiagram
+ direction TB
+ files {
+  uuid tenant_id PK,FK
+  uuid id PK
+  text state
+  uuid uploaded_by FK
+ }
+ catalog_imports {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid file_id FK
+  text state
+ }
+ catalog_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  integer number
+  uuid import_id FK
+ }
+ resources {
+  uuid tenant_id PK,FK
+  uuid id PK
+  text reference
+  uuid unit_id FK
+ }
+ resource_prices {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid resource_id FK
+  uuid catalog_revision_id FK
+ }
+ works {
+  uuid tenant_id PK,FK
+  uuid id PK
+  text reference
+ }
+ work_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid work_id FK
+  integer number
+  uuid unit_id FK
+ }
+ work_components {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid work_revision_id FK
+  uuid resource_id FK
+ }
+ units {
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ accounts ||--o{ files : uploaded_by
+ files ||--o{ catalog_imports : file_id
+ catalog_imports o|--o{ catalog_revisions : import_id
+ units ||--o{ resources : unit_id
+ resources ||--o{ resource_prices : resource_id
+ catalog_revisions ||--o{ resource_prices : catalog_revision_id
+ works ||--o{ work_revisions : work_id
+ units ||--o{ work_revisions : unit_id
+ work_revisions ||--o{ work_components : work_revision_id
+ resources ||--o{ work_components : resource_id

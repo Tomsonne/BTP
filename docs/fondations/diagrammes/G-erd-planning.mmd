@@ -1,0 +1,55 @@
+erDiagram
+ direction TB
+ calendar_reservations {
+  uuid id PK
+  uuid tenant_id FK
+  uuid account_id FK
+  tstzrange period
+ }
+ assignments {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid membership_id FK
+  uuid calendar_reservation_id FK
+ }
+ leave_requests {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid membership_id FK
+  tstzrange period
+  text state
+  uuid calendar_reservation_id FK
+  uuid approved_by FK
+ }
+ time_entries {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid membership_id FK
+  text state
+ }
+ tenants {
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ sites {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ memberships {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ tenants ||--o{ calendar_reservations : tenant_id
+ accounts ||--o{ calendar_reservations : account_id
+ sites ||--o{ assignments : site_id
+ memberships ||--o{ assignments : membership_id
+ calendar_reservations ||--o| assignments : calendar_reservation_id
+ memberships ||--o{ leave_requests : membership_id
+ calendar_reservations o|--o{ leave_requests : calendar_reservation_id
+ accounts o|--o{ leave_requests : approved_by
+ sites ||--o{ time_entries : site_id
+ memberships ||--o{ time_entries : membership_id

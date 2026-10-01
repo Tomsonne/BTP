@@ -1,0 +1,18 @@
+flowchart TB
+ A[Choisir personne, site et intervalle] --> B[Contrôler droits et appartenance active]
+ B --> C[Normaliser UTC et intervalle demi-ouvert]
+ C --> D[Contrôler disponibilités et congés]
+ D --> E{Conflit privé global ?}
+ E -->|Oui| F[Afficher indisponible sans détails tiers]
+ F --> G[Modifier dates ou personne]
+ G --> A
+ E -->|Non| H[Transaction réservation et affectation]
+ H --> I{Conflit concurrent en base ?}
+ I -->|Oui| F
+ I -->|Non| J[Confirmer et notifier]
+ K[Demande de congé] --> L[Contrôler réservations existantes]
+ L --> M{Réaffectation nécessaire ?}
+ M -->|Oui| N[Chef résout avant approbation]
+ N --> L
+ M -->|Non| O[Réserver absence atomiquement]
+ O --> D

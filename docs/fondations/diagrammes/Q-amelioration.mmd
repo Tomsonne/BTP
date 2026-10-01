@@ -1,0 +1,19 @@
+flowchart TB
+ F[Retour utilisateur privé] --> A[Analyser erreur et contexte]
+ A --> T{Portée choisie ?}
+ T -->|Entreprise| P[Règle privée versionnée]
+ T -->|Collective proposée| C{Autorisation et droits de source ?}
+ C -->|Non| Stop[Rester privé ou rejeter]
+ C -->|Oui| D[Dépersonnaliser et examiner confidentialité]
+ D --> E{Risque résiduel acceptable ?}
+ E -->|Non| Stop
+ E -->|Oui| R[Règle commune candidate sans prix privés]
+ P --> Eval[Évaluer sur cas de référence]
+ R --> Eval
+ Eval --> V{Omissions et régressions ?}
+ V -->|Oui| A
+ V -->|Non| H[Approbation humaine documentée]
+ H --> Pub[Publication versionnée et rollout limité]
+ Pub --> Mon[Mesurer incidents et erreurs]
+ Mon -->|Régression| Roll[Rollback version précédente]
+ Mon -->|Nouveau retour| F

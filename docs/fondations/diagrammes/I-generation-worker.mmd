@@ -1,0 +1,29 @@
+sequenceDiagram
+ autonumber
+ participant W as Worker
+ participant DB as PostgreSQL
+ participant IA as Fournisseur IA
+ participant C as Contrôles
+ W->>DB: Charger snapshot et renouveler lease
+ W->>IA: Texte minimisé, schéma, règles versionnées
+ alt Timeout, quota fournisseur ou 5xx
+ IA-->>W: Échec ou issue inconnue
+ W->>DB: Tracer tentative et coût provisionné
+ alt Budget et tentatives disponibles
+ W->>DB: A_REPRENDRE et next_run_at
+ else Limite atteinte
+ W->>DB: ECHEC et diagnostic
+ end
+ else Réponse disponible
+ IA-->>W: Proposition structurée
+ W->>C: Schéma, références, unités et omissions
+ C-->>W: Données contrôlées ou erreur
+ W->>DB: Transaction token, autorisation et source
+ alt Token perdu ou annulation
+ DB-->>W: Rejeter publication
+ else Source différente
+ DB-->>W: OBSOLETE, résultat conservé
+ else Source courante
+ DB-->>W: REUSSI ou ECHEC structurel, usage enregistré
+ end
+ end

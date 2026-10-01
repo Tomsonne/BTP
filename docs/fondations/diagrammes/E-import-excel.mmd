@@ -1,0 +1,20 @@
+flowchart TB
+ A[Déposer XLSX limité] --> B{Type, taille, analyse ?}
+ B -->|Refus| R[Rapport de rejet]
+ B -->|Valide| C[Choisir feuille et lire cellules]
+ C --> D[Mapper référence, libellé, prix et unité]
+ D --> E[Prévisualiser normalisation]
+ E --> F{Unité ou devise absente ?}
+ F -->|Oui| G[Renseigner explicitement]
+ G --> E
+ F -->|Non| H[Contrôler prix et doublons]
+ H --> I{Lignes invalides ?}
+ I -->|Oui| J[Corriger ou exclure explicitement]
+ J --> E
+ I -->|Non| K[Diff nouveaux articles et prix]
+ K --> L[Confirmer mapping et exclusions]
+ L --> M{Hash et catalogue courants ?}
+ M -->|Non| E
+ M -->|Oui| N[Transaction idempotente]
+ N --> O[Nouvelle version et prix historisés]
+ O --> P[Rapport import et audit]

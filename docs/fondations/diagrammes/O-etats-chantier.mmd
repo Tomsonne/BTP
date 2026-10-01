@@ -1,0 +1,16 @@
+stateDiagram-v2
+ direction TB
+ [*] --> PREPARATION : devis accepté
+ PREPARATION --> EN_COURS : équipe et périmètre prêts
+ EN_COURS --> SUSPENDU : motif et dates
+ SUSPENDU --> EN_COURS : reprise autorisée
+ EN_COURS --> A_RECEVOIR : travaux déclarés terminés
+ A_RECEVOIR --> RESERVES : réception avec réserves
+ RESERVES --> A_RECEVOIR : réserves levées
+ A_RECEVOIR --> RECEPTIONNE : preuve de réception
+ RECEPTIONNE --> CLOTURE : contrôle final
+ PREPARATION --> ANNULE : décision motivée
+ EN_COURS --> ANNULE : engagements examinés
+ SUSPENDU --> ANNULE : engagements examinés
+ CLOTURE --> [*]
+ ANNULE --> [*]

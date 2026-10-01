@@ -1,0 +1,23 @@
+stateDiagram-v2
+ direction TB
+ [*] --> BROUILLON : changement confirmé
+ BROUILLON --> EN_REVUE : demande de revue
+ EN_REVUE --> BROUILLON : correction motivée
+ EN_REVUE --> VALIDE : zéro blocage et permission
+ VALIDE --> ENVOYE : PDF et envoi confirmé
+ VALIDE --> REMPLACE : nouvelle version validée
+ ENVOYE --> ACCEPTE : preuve et baseline courante
+ ENVOYE --> REFUSE : décision prouvée
+ ENVOYE --> EXPIRE : échéance
+ ENVOYE --> REMPLACE : nouvelle version envoyée
+ BROUILLON --> ABANDONNE : auteur habilité
+ EN_REVUE --> ABANDONNE : réviseur habilité
+ ACCEPTE --> [*]
+ REFUSE --> [*]
+ EXPIRE --> [*]
+ REMPLACE --> [*]
+ ABANDONNE --> [*]
+ note right of ENVOYE
+  Baseline périmée : acceptation bloquée.
+  Nouvelle version et nouvelle validation.
+ end note

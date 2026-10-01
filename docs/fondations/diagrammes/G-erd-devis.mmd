@@ -1,0 +1,103 @@
+erDiagram
+ direction TB
+ requirements {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid client_id FK
+ }
+ requirement_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid requirement_id FK
+  integer number
+  uuid created_by FK
+ }
+ requirement_files {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid requirement_revision_id FK
+  uuid file_id FK
+ }
+ quotes {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid requirement_id FK
+  text reference
+  uuid draft_version_id FK
+  uuid active_offer_version_id FK
+  uuid accepted_version_id FK
+ }
+ quote_versions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_id FK
+  uuid requirement_revision_id FK
+  integer number
+  integer edit_revision
+  text state
+  uuid validated_by FK
+ }
+ quote_lines {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_version_id FK
+  uuid work_revision_id FK
+  uuid unit_id FK
+ }
+ line_components {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_line_id FK
+  uuid resource_price_id FK
+  uuid unit_id FK
+ }
+ quote_decisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_version_id FK
+  uuid recorded_by FK
+  uuid proof_file_id FK
+ }
+ clients {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ files {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ work_revisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ units {
+  uuid id PK
+ }
+ resource_prices {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ clients ||--o{ requirements : client_id
+ requirements ||--o{ requirement_revisions : requirement_id
+ accounts ||--o{ requirement_revisions : created_by
+ requirement_revisions ||--o{ requirement_files : requirement_revision_id
+ files ||--o{ requirement_files : file_id
+ requirements ||--o{ quotes : requirement_id
+ quote_versions o|--o{ quotes : draft_version_id
+ quote_versions o|--o{ quotes : active_offer_version_id
+ quote_versions o|--o{ quotes : accepted_version_id
+ quotes ||--o{ quote_versions : quote_id
+ requirement_revisions ||--o{ quote_versions : requirement_revision_id
+ accounts o|--o{ quote_versions : validated_by
+ quote_versions ||--o{ quote_lines : quote_version_id
+ work_revisions o|--o{ quote_lines : work_revision_id
+ units ||--o{ quote_lines : unit_id
+ quote_lines ||--o{ line_components : quote_line_id
+ resource_prices o|--o{ line_components : resource_price_id
+ units ||--o{ line_components : unit_id
+ quote_versions ||--o| quote_decisions : quote_version_id
+ accounts ||--o{ quote_decisions : recorded_by
+ files o|--o{ quote_decisions : proof_file_id

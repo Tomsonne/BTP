@@ -1,0 +1,12 @@
+erDiagram
+ direction TB
+ COMPTE ||--o{ APPARTENANCE : rejoint
+ ENTREPRISE ||--o{ APPARTENANCE : accueille
+ APPARTENANCE ||--o{ ATTRIBUTION_ROLE : dispose
+ ENTREPRISE ||--o{ CLIENT : sert
+ CLIENT ||--o{ CONTACT : identifie
+ ENTREPRISE ||--o{ INVITATION : propose
+ CLIENT ||--o{ CHANTIER : concerne
+ COMPTE ||--o{ ACCES_CHANTIER : consulte
+ CHANTIER ||--o{ ACCES_CHANTIER : autorise
+ CONTACT o|--o{ ACCES_CHANTIER : justifie

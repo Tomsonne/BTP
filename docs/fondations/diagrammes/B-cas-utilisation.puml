@@ -1,0 +1,50 @@
+@startuml
+!pragma layout smetana
+top to bottom direction
+skinparam shadowing false
+actor "Admin plateforme" as AP
+actor "Admin entreprise" as AE
+actor "Chargé de devis" as DV
+actor "Chef de chantier" as CH
+actor "Employé" as EM
+actor "Client" as CL
+rectangle "Plateforme BTP" {
+ usecase "Exploiter et suivre quotas\nMVP" as U1
+ usecase "Gérer membres et catalogue\nMVP" as U2
+ usecase "Préparer et corriger devis\nMVP" as U3
+ usecase "Valider et envoyer\nMVP - permission" as U4
+ usecase "Enregistrer décision prouvée\nMVP" as U5
+ usecase "Suivre chantier et publier\nE1" as U6
+ usecase "Déclarer changement et avenant\nE1" as U7
+ usecase "Saisir activité affectée\nE1/E2" as U8
+ usecase "Consulter contenu autorisé\net décider - E1" as U9
+ usecase "Planifier et résoudre conflits\nE2" as U10
+}
+AP --> U1
+AE --> U2
+AE --> U3
+DV --> U3
+AE --> U4
+DV --> U4 : si délégué
+AE --> U5
+CH --> U6
+CH --> U7
+EM --> U8
+EM --> U7 : déclaration
+CL --> U9
+CH --> U10 : si délégué
+AP -[hidden]down-> AE
+AE -[hidden]down-> DV
+DV -[hidden]down-> CH
+CH -[hidden]down-> EM
+EM -[hidden]down-> CL
+U1 -[hidden]down-> U2
+U2 -[hidden]down-> U3
+U3 -[hidden]down-> U4
+U4 -[hidden]down-> U5
+U5 -[hidden]down-> U6
+U6 -[hidden]down-> U7
+U7 -[hidden]down-> U8
+U8 -[hidden]down-> U9
+U9 -[hidden]down-> U10
+@enduml

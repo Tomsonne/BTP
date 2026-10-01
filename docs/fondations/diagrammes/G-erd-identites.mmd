@@ -1,0 +1,42 @@
+erDiagram
+ direction TB
+ tenants {
+  uuid id PK
+  text state
+ }
+ accounts {
+  uuid id PK
+  text state
+ }
+ sessions {
+  uuid id PK
+  uuid account_id FK
+ }
+ memberships {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid account_id FK
+  text state
+ }
+ membership_roles {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid membership_id FK
+ }
+ invitations {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ clients {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ client_contacts {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid client_id FK
+ }
+ accounts ||--o{ sessions : account_id
+ accounts ||--o| memberships : account_id
+ memberships ||--o{ membership_roles : membership_id
+ clients ||--o{ client_contacts : client_id

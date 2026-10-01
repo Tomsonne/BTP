@@ -1,0 +1,17 @@
+erDiagram
+ direction TB
+ ENTREPRISE ||--o{ RESSOURCE : possède
+ RESSOURCE ||--o{ PRIX : historise
+ ENTREPRISE ||--o{ OUVRAGE : définit
+ OUVRAGE ||--o{ REVISION_OUVRAGE : versionne
+ REVISION_OUVRAGE ||--|{ COMPOSANT_OUVRAGE : compose
+ RESSOURCE ||--o{ COMPOSANT_OUVRAGE : fournit
+ CLIENT ||--o{ BESOIN : exprime
+ BESOIN ||--o{ REVISION_BESOIN : versionne
+ BESOIN ||--o{ DEVIS : prépare
+ DEVIS ||--o{ VERSION_DEVIS : conserve
+ REVISION_BESOIN ||--o{ VERSION_DEVIS : fonde
+ VERSION_DEVIS ||--o{ LIGNE_DEVIS : contient
+ REVISION_OUVRAGE o|--o{ LIGNE_DEVIS : suggère
+ LIGNE_DEVIS ||--o{ COMPOSANT_LIGNE : détaille
+ VERSION_DEVIS ||--o| DECISION_CLIENT : reçoit

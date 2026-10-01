@@ -1,0 +1,27 @@
+erDiagram
+ direction TB
+ idempotency_keys {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid account_id FK
+ }
+ ai_budget_periods {
+  uuid tenant_id PK,FK
+  uuid id PK
+  text period
+ }
+ outbox {
+  uuid tenant_id PK,FK
+  uuid id PK
+  text state
+ }
+ audit_events {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid actor_id FK
+ }
+ accounts {
+  uuid id PK
+ }
+ accounts ||--o{ idempotency_keys : account_id
+ accounts o|--o{ audit_events : actor_id

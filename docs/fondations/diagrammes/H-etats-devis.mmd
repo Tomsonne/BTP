@@ -1,0 +1,23 @@
+stateDiagram-v2
+ direction TB
+ [*] --> BROUILLON : création par AE ou DV
+ BROUILLON --> EN_REVUE : demande avec révision courante
+ EN_REVUE --> BROUILLON : retour motivé
+ EN_REVUE --> VALIDE : permission et zéro blocage
+ BROUILLON --> ABANDONNE : auteur habilité
+ EN_REVUE --> ABANDONNE : réviseur habilité
+ VALIDE --> ENVOYE : action explicite et envoi confirmé
+ VALIDE --> REMPLACE : nouvelle version validée
+ ENVOYE --> ACCEPTE : preuve et offre active
+ ENVOYE --> REFUSE : preuve et offre active
+ ENVOYE --> EXPIRE : échéance atteinte
+ ENVOYE --> REMPLACE : nouvelle offre envoyée
+ ACCEPTE --> [*]
+ REFUSE --> [*]
+ EXPIRE --> [*]
+ REMPLACE --> [*]
+ ABANDONNE --> [*]
+ note right of VALIDE
+  Contenu et prix figés.
+  L'outbox en attente ne change pas cet état.
+ end note

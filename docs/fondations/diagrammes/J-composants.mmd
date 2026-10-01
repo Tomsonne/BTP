@@ -1,0 +1,31 @@
+flowchart TB
+ Web[Interface React] --> API[API et contrôle accès]
+ subgraph Monolithe[Monolithe modulaire]
+  direction TB
+  Acc[Identité et permissions]
+  Bes[Clients et besoins]
+  Cat[Catalogue et imports]
+  Dev[Devis et versions]
+  Prix[Chiffrage déterministe]
+  Orch[Orchestration IA]
+  Doc[Documents et envois]
+  Obs[Audit et usage]
+  Ext[Chantiers, avenants, planning]
+ end
+ API --> Acc
+ API --> Bes
+ API --> Cat
+ API --> Dev
+ API --> Ext
+ Dev --> Prix
+ Dev --> Orch
+ Dev --> Doc
+ Orch --> Cat
+ Ext --> Dev
+ Dev --> Obs
+ Worker[Worker durable] --> Orch
+ Worker --> Doc
+ API --> DB[(PostgreSQL)]
+ Worker --> DB
+ Doc --> Objet[Stockage privé]
+ Orch --> IA[Fournisseur IA]

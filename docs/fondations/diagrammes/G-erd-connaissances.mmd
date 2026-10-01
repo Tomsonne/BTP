@@ -1,0 +1,18 @@
+erDiagram
+ direction TB
+ knowledge_releases {
+  uuid id PK
+  text state
+ }
+ feedback {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid job_id FK
+  uuid release_id FK
+ }
+ generation_jobs {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ generation_jobs o|--o{ feedback : job_id
+ knowledge_releases o|--o{ feedback : release_id

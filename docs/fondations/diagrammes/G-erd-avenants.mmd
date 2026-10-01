@@ -1,0 +1,84 @@
+erDiagram
+ direction TB
+ amendments {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid site_id FK
+  uuid scope_change_id FK
+  uuid reference_quote_version_id FK
+  text reference
+ }
+ amendment_versions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid amendment_id FK
+  integer number
+  integer edit_revision
+  integer baseline_revision
+  text state
+ }
+ amendment_lines {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid amendment_version_id FK
+  uuid unit_id FK
+ }
+ amendment_decisions {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid amendment_version_id FK
+  uuid recorded_by FK
+ }
+ pdf_documents {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_version_id FK
+  uuid amendment_version_id FK
+  uuid file_id FK
+ }
+ deliveries {
+  uuid tenant_id PK,FK
+  uuid id PK
+  uuid quote_version_id FK
+  uuid amendment_version_id FK
+  uuid pdf_document_id FK
+  text state
+  uuid authorized_by FK
+ }
+ sites {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ scope_changes {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ quote_versions {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ units {
+  uuid id PK
+ }
+ accounts {
+  uuid id PK
+ }
+ files {
+  uuid tenant_id PK,FK
+  uuid id PK
+ }
+ sites ||--o{ amendments : site_id
+ scope_changes ||--o| amendments : scope_change_id
+ quote_versions ||--o{ amendments : reference_quote_version_id
+ amendments ||--o{ amendment_versions : amendment_id
+ amendment_versions ||--o{ amendment_lines : amendment_version_id
+ units ||--o{ amendment_lines : unit_id
+ amendment_versions ||--o| amendment_decisions : amendment_version_id
+ accounts ||--o{ amendment_decisions : recorded_by
+ quote_versions o|--o{ pdf_documents : quote_version_id
+ amendment_versions o|--o{ pdf_documents : amendment_version_id
+ files ||--o{ pdf_documents : file_id
+ quote_versions o|--o{ deliveries : quote_version_id
+ amendment_versions o|--o{ deliveries : amendment_version_id
+ pdf_documents ||--o{ deliveries : pdf_document_id
+ accounts ||--o{ deliveries : authorized_by
